@@ -1,5 +1,5 @@
 
-package ru.dev.prizrakk.manager;
+package ru.dev.prizrakk.cookiesbot.manager;
 
 public class ColorManager
 {
