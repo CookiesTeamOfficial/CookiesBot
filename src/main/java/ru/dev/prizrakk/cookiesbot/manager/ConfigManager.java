@@ -1,11 +1,9 @@
 
 
-package ru.dev.prizrakk.manager;
+package ru.dev.prizrakk.cookiesbot.manager;
 
-import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.File;
 import java.util.Properties;
