@@ -1,4 +1,4 @@
-package ru.dev.prizrakk.lavaplayer;
+package ru.dev.prizrakk.cookiesbot.lavaplayer;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -6,8 +6,8 @@ import net.dv8tion.jda.api.entities.Guild;
 
 public class GuildMusicManager {
 
-    private TrackScheduler trackScheduler;
-    private AudioForwarder audioForwarder;
+    private final TrackScheduler trackScheduler;
+    private final AudioForwarder audioForwarder;
 
     public GuildMusicManager(AudioPlayerManager manager, Guild guild) {
         AudioPlayer player = manager.createPlayer();
