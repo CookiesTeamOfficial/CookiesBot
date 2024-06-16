@@ -1,12 +1,10 @@
-package ru.dev.prizrakk.util;
+package ru.dev.prizrakk.cookiesbot.util;
 
 import net.dv8tion.jda.api.entities.Guild;
-import ru.dev.prizrakk.manager.ConfigManager;
+import ru.dev.prizrakk.cookiesbot.manager.ConfigManager;
 
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class Values {
     public static ConfigManager config = new ConfigManager();
