@@ -1,4 +1,4 @@
-package ru.dev.prizrakk.cookiesbot.command.prefix.system;
+package ru.dev.prizrakk.command.prefix.system;
 
 import com.google.gson.Gson;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -10,8 +10,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import ru.dev.prizrakk.cookiesbot.util.Config;
-import ru.dev.prizrakk.cookiesbot.util.Utils;
+import ru.dev.prizrakk.manager.LoggerManager;
+import ru.dev.prizrakk.util.Config;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -108,7 +108,8 @@ public class Api extends ListenerAdapter {
 
             check = statusCode == 200;
         } catch (IOException e) {
-            Utils.getLogger().error("Произошла ошибка при выполнение действия checkUri \n StarkTrace: \n " + e.getMessage());
+            LoggerManager log = new LoggerManager();
+            log.error("Произошла ошибка при выполнение действия checkUri \n StarkTrace: \n " + e.getMessage());
             check = false;
         }
         if(check) {
