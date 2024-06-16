@@ -1,29 +1,23 @@
-package ru.dev.prizrakk.database;
+package ru.dev.prizrakk.cookiesbot.database;
 
-import ru.dev.prizrakk.Main;
-import ru.dev.prizrakk.manager.ConfigManager;
-import ru.dev.prizrakk.manager.LoggerManager;
+import ru.dev.prizrakk.cookiesbot.manager.ConfigManager;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.sql.*;
 
 
-public class Database {
-    private static Main main;
-    public Database(Main main) {
-        Database.main = main;
-    }
+public class Database extends Utils {
 
     private static Connection connection;
-
-
-    LoggerManager log = new LoggerManager();
 
     public Connection getConnection() throws  SQLException{
 
         if(connection != null){
             return connection;
         }
-
+        getLogger().debug("===================");
+        getLogger().debug("Загрузка Базы данных");
+        getLogger().debug("===================");
         ConfigManager config = new ConfigManager();
         //String url = config.getProperty("jdbc");
         //String user = config.getProperty("login");
@@ -33,15 +27,14 @@ public class Database {
 
 
         connection = DriverManager.getConnection(url);
-        log.info("Подключение успешно произведено!");
-
+        getLogger().debug("Подключение успешно произведено!");
         return connection;
     }
 
     public void initializeDatabase() throws SQLException{
         Statement statement = getConnection().createStatement();
         // SQL Запрос
-        log.info("Проверка таблицы user_info");
+        getLogger().debug("Проверка таблицы user_info");
         String user_info = "CREATE TABLE IF NOT EXISTS `user_info` (\n" +
                 "\t`id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "\t`UUID` INT,\n" +
@@ -55,17 +48,30 @@ public class Database {
                 "\t`ban` INT\n" +
                 ");";
         statement.execute(user_info);
-        log.info("Проверка таблицы settings");
-        String settings = "CREATE TABLE IF NOT EXISTS `settings` (\n" +
+        getLogger().debug("Проверка таблицы settings");
+        String settings = "CREATE TABLE IF NOT EXISTS `guild_settings` (\n" +
+                "\t`id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "\t`UUID` INT,\n" +
                 "\t`dev` VARCHAR(128),\n" +
                 "\t`owner` VARCHAR(128),\n" +
                 "\t`audit_message` VARCHAR(128),\n" +
                 "\t`audit_manager` VARCHAR(128),\n" +
                 "\t`audit_blacklist` VARCHAR(128),\n" +
-                "\t`balance` VARCHAR(128)\n" +
+                "\t`balance` VARCHAR(128),\n" +
+                "\t`ban` INT\n" +
                 ");";
         statement.execute(settings);
-        log.info("Проверка таблицы mutes");
+        getLogger().debug("Проверка таблицы user_rank");
+        String user_rank = "CREATE TABLE IF NOT EXISTS `user_rank` (\n" +
+                "\t`user_id` INTEGER,\n" +
+                "\t`guild_id` INTEGER,\n" +
+                "\t`exp` INT,\n" +
+                "\t`maxExp` INT,\n" +
+                "\t`level` INT,\n" +
+                "\tPRIMARY KEY (`user_id`, `guild_id`)\n" +
+                ");";
+        statement.execute(user_rank);
+        getLogger().debug("Проверка таблицы mutes");
         String mutes = "CREATE TABLE IF NOT EXISTS mutes (\n" +
                 "\t`id` INTEGER PRIMARY KEY,\n" +
                 "\t`userId` BIGINT,\n" +
@@ -74,7 +80,7 @@ public class Database {
         statement.execute(mutes);
 
         statement.close();
-        log.info("Проверка базы данных прошло успешно!");
+        getLogger().debug("Проверка/Создание базы данных прошло успешно!");
     }
     public UserVariable findPlayerStatsByNICK(String UUID) throws SQLException {
 
@@ -99,18 +105,46 @@ public class Database {
 
         return null;
     }
+    public ExpVariable findExpStatsByNICK(String userID, String guildID) throws SQLException {
 
-    /*
-                "\t`id` INT,\n" +
-                "\t`UUID` INT,\n" +
-                "\t`name` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci,\n" +
-                "\t`balance` INT,\n" +
-                "\t`xp` INT,\n" +
-                "\t`level` INT,\n" +
-                "\t`warn_count` INT,\n" +
-                "\t`ban` INT\n" +
-                ");";
-     */
+        PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM user_rank WHERE user_id = ? AND guild_id = ?");
+        statement.setString(1, userID);
+        statement.setString(2, guildID);
+
+        ResultSet resultSet = statement.executeQuery();
+
+        ExpVariable expVariable;
+        if(resultSet.next()){
+
+            //GDBV = new GDBV(resultSet.getString("nick"), resultSet.getInt(), resultSet.getString("prefix"), resultSet.getInt("rep"), resultSet.getInt("deaths"), resultSet.getInt("kills"), resultSet.getLong("blocks_broken"), resultSet.getDouble("balance"), resultSet.getDate("last_login"), resultSet.getDate("last_logout"));
+            expVariable = new ExpVariable(resultSet.getString("user_id"), resultSet.getString("guild_id"), resultSet.getInt("exp"), resultSet.getInt("maxExp"), resultSet.getInt("level"));
+            //String name, int id, int balance, int warn_count, int level, int xp, int ban, int UUID
+            statement.close();
+
+            return expVariable;
+        }
+
+
+        statement.close();
+
+        return null;
+    }
+    public void createUserExpStats(ExpVariable expVariable) throws SQLException {
+
+        PreparedStatement statement = getConnection()
+                .prepareStatement("INSERT INTO user_rank(user_id, guild_id, exp, maxExp, level) VALUES (?, ?,?, ?, ?)");
+        statement.setString(1, expVariable.getUserID());
+        statement.setString(2, expVariable.getGuildID());
+        statement.setDouble(3, expVariable.getExp());
+        statement.setInt(4, expVariable.getMaxExp());
+        statement.setInt(5, expVariable.getLevel());
+
+        statement.executeUpdate();
+
+        statement.close();
+
+    }
+
     public void createUserStats(UserVariable UserVariable) throws SQLException {
 
         PreparedStatement statement = getConnection()
@@ -128,7 +162,20 @@ public class Database {
         statement.close();
 
     }
+    public void updateUserExpStats(ExpVariable expVariable) throws SQLException {
 
+        PreparedStatement statement = getConnection().prepareStatement("UPDATE user_rank SET exp = ?, maxExp = ?, level = ? WHERE user_id = ? AND guild_id = ?");
+        statement.setDouble(1, expVariable.getExp());
+        statement.setInt(2, expVariable.getMaxExp());
+        statement.setInt(3, expVariable.getLevel());
+        statement.setString(4, expVariable.getUserID());
+        statement.setString(5, expVariable.getGuildID());
+
+        statement.executeUpdate();
+
+        statement.close();
+
+    }
     public void updateUserStats(UserVariable UserVariable) throws SQLException {
 
         PreparedStatement statement = getConnection().prepareStatement("UPDATE user_info SET warn_count = ?, xp = ?, level = ?, name = ?, balance = ?, ban = ? WHERE UUID = ?");
