@@ -1,17 +1,19 @@
-package ru.dev.prizrakk.command.slash.music;
+package ru.dev.prizrakk.cookiesbot.command.slash.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import ru.dev.prizrakk.ICommand;
-import ru.dev.prizrakk.lavaplayer.GuildMusicManager;
-import ru.dev.prizrakk.lavaplayer.PlayerManager;
+import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
+import ru.dev.prizrakk.cookiesbot.command.ICommand;
+import ru.dev.prizrakk.cookiesbot.command.slash.CommandStatus;
+import ru.dev.prizrakk.cookiesbot.lavaplayer.GuildMusicManager;
+import ru.dev.prizrakk.cookiesbot.lavaplayer.PlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import ru.dev.prizrakk.util.Config;
-import ru.dev.prizrakk.util.Values;
+import ru.dev.prizrakk.cookiesbot.util.Config;
+import ru.dev.prizrakk.cookiesbot.util.Values;
 
 import java.util.List;
 
@@ -29,6 +31,16 @@ public class NowPlaying implements ICommand {
     @Override
     public List<OptionData> getOptions() {
         return null;
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.MUSIC;
+    }
+
+    @Override
+    public CommandStatus getStatus() {
+        return CommandStatus.ERROR;
     }
 
     @Override
