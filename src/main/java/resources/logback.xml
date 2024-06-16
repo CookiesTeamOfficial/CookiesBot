@@ -1,0 +1,27 @@
+<configuration>
+    <!-- Отключаем логирование для Jetty -->
+    <logger name="org.eclipse.jetty" level="OFF"/>
+
+    <!-- Отключаем логирование для Spark -->
+    <logger name="spark" level="OFF"/>
+
+    <!-- Отключаем логирование для JDA -->
+    <logger name="net.dv8tion.jda" level="OFF"/>
+
+    <!-- Включаем логирование только для вашего кода -->
+    <logger name="ru.dev.prizrakk" level="DEBUG">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <!-- Консольный аппендер -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Уровень логирования по умолчанию -->
+    <root level="ERROR">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
