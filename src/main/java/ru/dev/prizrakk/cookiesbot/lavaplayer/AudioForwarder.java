@@ -1,4 +1,4 @@
-package ru.dev.prizrakk.lavaplayer;
+package ru.dev.prizrakk.cookiesbot.lavaplayer;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.MutableAudioFrame;
