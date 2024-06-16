@@ -1,9 +1,11 @@
-package ru.dev.prizrakk.command.slash.music;
+package ru.dev.prizrakk.cookiesbot.command.slash.music;
 
-import ru.dev.prizrakk.ICommand;
-import ru.dev.prizrakk.lavaplayer.GuildMusicManager;
-import ru.dev.prizrakk.lavaplayer.PlayerManager;
-import ru.dev.prizrakk.lavaplayer.TrackScheduler;
+import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
+import ru.dev.prizrakk.cookiesbot.command.ICommand;
+import ru.dev.prizrakk.cookiesbot.command.slash.CommandStatus;
+import ru.dev.prizrakk.cookiesbot.lavaplayer.GuildMusicManager;
+import ru.dev.prizrakk.cookiesbot.lavaplayer.PlayerManager;
+import ru.dev.prizrakk.cookiesbot.lavaplayer.TrackScheduler;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -25,6 +27,15 @@ public class Stop implements ICommand {
     @Override
     public List<OptionData> getOptions() {
         return null;
+    }
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.MUSIC;
+    }
+
+    @Override
+    public CommandStatus getStatus() {
+        return CommandStatus.ERROR;
     }
 
     @Override
