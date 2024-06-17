@@ -16,6 +16,7 @@ import ru.dev.prizrakk.cookiesbot.command.prefix.system.Diagnostics;
 import ru.dev.prizrakk.cookiesbot.command.slash.music.*;
 import ru.dev.prizrakk.cookiesbot.command.slash.server.*;
 import ru.dev.prizrakk.cookiesbot.command.slash.server.moderation.Mute;
+import ru.dev.prizrakk.cookiesbot.command.slash.system.Status;
 import ru.dev.prizrakk.cookiesbot.command.slash.system.help.Help;
 import ru.dev.prizrakk.cookiesbot.command.slash.system.help.HelpSelectMenu;
 import ru.dev.prizrakk.cookiesbot.database.Database;
@@ -76,9 +77,13 @@ public class Main extends Utils {
         commandManager.add(new ServerInfo());
         commandManager.add(new UserInfo());
         commandManager.add(new Avatar());
-        commandManager.add(new Help());
+
         commandManager.add(new RankCard(database));
         commandManager.add(new LeaderBoard(database));
+
+        /*System command*/
+        commandManager.add(new Status());
+        commandManager.add(new Help());
         jda.addEventListener(new HelpSelectMenu());
         /* moderation */
         commandManager.add(new Mute());
