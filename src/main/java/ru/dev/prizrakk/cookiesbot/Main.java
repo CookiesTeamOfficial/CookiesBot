@@ -13,6 +13,7 @@ import ru.dev.prizrakk.cookiesbot.command.prefix.fun.Dogs;
 import ru.dev.prizrakk.cookiesbot.command.prefix.fun.Kawaii;
 import ru.dev.prizrakk.cookiesbot.command.prefix.system.Api;
 import ru.dev.prizrakk.cookiesbot.command.prefix.system.Diagnostics;
+import ru.dev.prizrakk.cookiesbot.command.slash.fun.Calc;
 import ru.dev.prizrakk.cookiesbot.command.slash.music.*;
 import ru.dev.prizrakk.cookiesbot.command.slash.server.*;
 import ru.dev.prizrakk.cookiesbot.command.slash.server.moderation.Mute;
@@ -66,6 +67,8 @@ public class Main extends Utils {
         /* Slash Command           */
         /* ======================= */
         CommandManager commandManager = new CommandManager();
+        /* fun command */
+        commandManager.add(new Calc());
         /* music command */
         commandManager.add(new Play());
         commandManager.add(new Skip());
