@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.utils.FileUpload;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
-import ru.dev.prizrakk.cookiesbot.command.slash.CommandStatus;
+import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.database.Database;
 import ru.dev.prizrakk.cookiesbot.database.DatabaseUtils;
 import ru.dev.prizrakk.cookiesbot.database.ExpVariable;
@@ -18,7 +18,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,19 +60,17 @@ public class RankCard implements ICommand {
         this.database = database;
         this.databaseUtils = new DatabaseUtils(database);
     }
+
     ExpVariable expVariable;
+
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
-        User user = null;
-        String status = null;
-        if (event.getOption("user") != null) {
-            user = event.getOption("user").getAsUser();
-        } else {
-            user = event.getUser();
-        }
+        User user = (event.getOption("user") != null) ? event.getOption("user").getAsUser() : event.getUser();
+
         expVariable = databaseUtils.getPlayerStatsFromDatabase(user.getId(), event.getGuild().getId());
+
         try {
-            String avatarUrl = user.getAvatarUrl(); // URL аватарки пользователя
+            String avatarUrl = user.getAvatarUrl();
             String effectiveName = user.getEffectiveName();
             String username = user.getName();
             int level = expVariable.getLevel();
@@ -97,7 +97,7 @@ public class RankCard implements ICommand {
         g.fillRect(0, 0, width, height);
 
         // Загрузка аватарки
-        BufferedImage avatar = ImageIO.read(new URL(avatarUrl));
+        BufferedImage avatar = loadImageFromUrl(avatarUrl);
         BufferedImage roundedAvatar = getRoundedImage(avatar, 160);
         g.drawImage(roundedAvatar, 20, 20, null);
 
@@ -145,6 +145,16 @@ public class RankCard implements ICommand {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(image, "png", baos);
         return baos.toByteArray();
+    }
+
+    private static BufferedImage loadImageFromUrl(String avatarUrl) throws IOException {
+        URL url = new URL(avatarUrl);
+        URLConnection uc = url.openConnection();
+        uc.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+
+        try (InputStream is = uc.getInputStream()) {
+            return ImageIO.read(is);
+        }
     }
 
     private static BufferedImage getRoundedImage(BufferedImage image, int diameter) {
