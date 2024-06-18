@@ -50,7 +50,12 @@ public class Status implements ICommand {
         // Нагрузка на систему
         OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
         int availableProcessors = osBean.getAvailableProcessors();
-        double systemLoad = osBean.getSystemLoadAverage() / availableProcessors;
+        double systemLoad = osBean.getSystemLoadAverage();
+        if (systemLoad < 0) {
+            systemLoad = 0;
+        } else {
+            systemLoad = systemLoad / availableProcessors;
+        }
 
         // Память
         long freeMemory = Runtime.getRuntime().freeMemory() / 1024 / 1024;
@@ -84,7 +89,7 @@ public class Status implements ICommand {
     }
 
     private String getProgressBar(double value) {
-        int totalBars = 20;
+        int totalBars = 10;
         int filledBars = (int) (value * totalBars);
         int emptyBars = totalBars - filledBars;
 
