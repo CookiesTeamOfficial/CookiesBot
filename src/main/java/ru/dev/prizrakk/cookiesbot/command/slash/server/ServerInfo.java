@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
-import ru.dev.prizrakk.cookiesbot.command.slash.CommandStatus;
+import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.util.Config;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 

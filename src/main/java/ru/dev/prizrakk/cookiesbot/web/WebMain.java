@@ -17,6 +17,7 @@ public class WebMain {
         ApiManager apiManager = new ApiManager();
         Logger.getLogger("org").setLevel(Level.OFF);
         Logger.getLogger("akka").setLevel(Level.OFF);
+        
         // Добавление API
         apiManager.addApi(new Home());
         apiManager.addApi(new GuildInfo());
