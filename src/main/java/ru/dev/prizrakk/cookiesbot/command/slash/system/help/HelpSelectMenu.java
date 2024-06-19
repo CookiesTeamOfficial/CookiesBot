@@ -19,12 +19,12 @@ import java.util.Date;
 import java.util.List;
 
 public class HelpSelectMenu extends ListenerAdapter {
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss ");
-    private final String timestamp = dateFormat.format(new Date());
     public List<ICommand> commands = CommandManager.commands; // Список всех команд
 
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss ");
+        String timestamp = dateFormat.format(new Date());
         if (event.getComponentId().equals("helpmenu")) {
             String selectedValue = event.getValues().get(0); // Получение первого выбранного значения
 
@@ -33,9 +33,10 @@ public class HelpSelectMenu extends ListenerAdapter {
                 embed.setTitle("Информация о CookiesBot");
                 embed.setColor(new Color(255, 104, 0));
                 embed.setDescription("CookiesBot был создан в инструмент который может вам помочь всем чем может и часто обновляется имея открытый код");
+                embed.addField("Разработчик", "<@579683756789727243>", true);
                 embed.addField("Язык Программирования", "`java 8`", true);
                 embed.addField("Библиотека Discord", "`JDA 5.0.0-beta.20`", true);
-                embed.addField("Версия бота", "`pre-release 0.2-rework`", true);
+                embed.addField("Версия бота", "`pre-release 0.4-rework`", true);
                 embed.setFooter("Команда вызвана: " + timestamp);
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             } else if (selectedValue.equals("command")) {

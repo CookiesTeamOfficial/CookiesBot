@@ -45,9 +45,9 @@ public class Help implements ICommand {
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(new Color(255, 104, 0));
-        embed.setTitle("Справочная информация о CookiesBot");
-        embed.setDescription("Здесь вы найдете бебру и вкинитесь :D");
-        embed.setFooter("Все права принадлежат Илону Маску");
+        embed.setTitle("Справочная информация о CookiesBot", "https://cookiesbot.dev-prizrakk.ru");
+        embed.setDescription("Справочная информация по боту CookiesBot");
+        embed.setFooter("Чем могу помочь? XD");
         event.replyEmbeds(embed.build()).setActionRow(
                 StringSelectMenu.create("helpmenu")
                         .addOptions(SelectOption.of("Информация", "info")
