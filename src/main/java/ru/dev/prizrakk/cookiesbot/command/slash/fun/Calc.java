@@ -7,6 +7,11 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
+import ru.dev.prizrakk.cookiesbot.database.Database;
+import ru.dev.prizrakk.cookiesbot.database.DatabaseUtils;
+import ru.dev.prizrakk.cookiesbot.database.GuildVariable;
+import ru.dev.prizrakk.cookiesbot.manager.LangManager;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
@@ -17,7 +22,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Calc implements ICommand {
+public class Calc extends Utils implements ICommand  {
     @Override
     public String getName() {
         return "calc";
@@ -60,7 +65,7 @@ public class Calc implements ICommand {
 
         // Проверка, что движок JavaScript доступен
         if (engine == null) {
-            event.reply("Ошибка: Движок JavaScript недоступен.").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.calc.errorEngine.message")).queue();
             return;
         }
 
@@ -78,13 +83,13 @@ public class Calc implements ICommand {
         try {
             Object result = engine.eval(expression, bindings);
             EmbedBuilder embed = new EmbedBuilder();
-            embed.setTitle("Калькулятор");
+            embed.setTitle(getLangMessage(event.getGuild(), "command.slash.calc.title.message"));
             embed.setColor(Color.BLUE);
-            embed.setDescription("Ваш результат: " + result);
-            embed.setFooter("Версия калькулятора beta-0.1");
+            embed.setDescription(getLangMessage(event.getGuild(), "command.slash.calc.description.message").replace("%result%", result.toString()));
+            embed.setFooter(getLangMessage(event.getGuild(), "command.slash.calc.footer.message"));
             event.replyEmbeds(embed.build()).queue();
         } catch (ScriptException e) {
-            event.reply("Простите, я не смог посчитать, слишком сложно для меня.").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.calc.error.message")).queue();
         }
     }
 
