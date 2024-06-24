@@ -1,11 +1,8 @@
 package ru.dev.prizrakk.cookiesbot.database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import net.dv8tion.jda.api.entities.Guild;
+
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DatabaseUtils {
     private final Database database;
@@ -20,7 +17,14 @@ public class DatabaseUtils {
         }
         return expVariable;
     }
-    // Вставка нового метода в DatabaseUtils
+    public GuildVariable getGuildFromDatabase(Guild guild) throws SQLException {
+        GuildVariable guildVariable = database.findGuild(guild.getId());
+        if(guildVariable == null) {
+            guildVariable = new GuildVariable(guild.getId(), "false", guild.getOwnerId(), "English", null, null, null, "0", 0);
+            database.createGuildStats(guildVariable);
+        }
+        return guildVariable;
+    }
 
 
 }
