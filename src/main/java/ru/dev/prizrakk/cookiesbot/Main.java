@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.command.prefix.fun.Dogs;
 import ru.dev.prizrakk.cookiesbot.command.prefix.fun.Kawaii;
 import ru.dev.prizrakk.cookiesbot.command.prefix.system.Api;
@@ -20,19 +19,19 @@ import ru.dev.prizrakk.cookiesbot.command.slash.server.moderation.Mute;
 import ru.dev.prizrakk.cookiesbot.command.slash.system.Status;
 import ru.dev.prizrakk.cookiesbot.command.slash.system.help.Help;
 import ru.dev.prizrakk.cookiesbot.command.slash.system.help.HelpSelectMenu;
+import ru.dev.prizrakk.cookiesbot.command.slash.system.settings.SettingsSelectMenu;
 import ru.dev.prizrakk.cookiesbot.database.Database;
 import ru.dev.prizrakk.cookiesbot.events.OnJoin;
 import ru.dev.prizrakk.cookiesbot.events.OnLeft;
 import ru.dev.prizrakk.cookiesbot.command.CommandManager;
 import ru.dev.prizrakk.cookiesbot.manager.ConsoleManager;
+import ru.dev.prizrakk.cookiesbot.manager.LangManager;
 import ru.dev.prizrakk.cookiesbot.manager.MessageManager;
 import ru.dev.prizrakk.cookiesbot.util.Config;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 import ru.dev.prizrakk.cookiesbot.web.WebMain;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main extends Utils {
     static JDA jda;
@@ -45,12 +44,18 @@ public class Main extends Utils {
         consoleManager.console();
 
         /* =============== */
+        /*   Lang Loader   */
+        /* =============== */
+
+        LangManager.loadLanguages();
+        /* =============== */
         /* DataBase Loader */
         /* =============== */
         main.JDBCConnect();
         main.jda(database);
+        Utils utils = new Utils(database);
         /* =============== */
-        /* Web Loader */
+        /*    Web Loader   */
         /* =============== */
         WebMain.initialize();
     }
@@ -81,13 +86,14 @@ public class Main extends Utils {
         commandManager.add(new UserInfo());
         commandManager.add(new Avatar());
 
-        commandManager.add(new RankCard(database));
+        commandManager.add(new RankCard());
         commandManager.add(new LeaderBoard(database));
 
         /*System command*/
         commandManager.add(new Status());
         commandManager.add(new Help());
         jda.addEventListener(new HelpSelectMenu());
+        jda.addEventListener(new SettingsSelectMenu(database));
         /* moderation */
         commandManager.add(new Mute());
 
@@ -97,8 +103,8 @@ public class Main extends Utils {
         /* Prefix Command          */
         /* ======================= */
         /* fun */
-        jda.addEventListener(new Dogs());
-        jda.addEventListener(new Kawaii());
+        jda.addEventListener(new Dogs(database));
+        jda.addEventListener(new Kawaii(database));
         /* system */
         jda.addEventListener(new Api());
         jda.addEventListener(new Diagnostics());
