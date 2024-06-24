@@ -10,7 +10,6 @@ public class LoggerManager {
     private final String timestamp = dateFormat.format(new Date());
     public void info(String message) {
         System.out.println("[" + timestamp + color.ANSI_GREEN + "INFO" + color.ANSI_RESET + "] " + message);
-        Logger.getLogger("DEBUG").info("sssssssssss");
     }
     public void debug(String message) {
         System.out.println("[" + timestamp + color.ANSI_BLUE + "DEBUG" + color.ANSI_RESET + "] " + message);
