@@ -9,10 +9,11 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.util.List;
 
-public class Skip implements ICommand {
+public class Skip extends Utils implements ICommand {
     @Override
     public String getName() {
         return "skip";
@@ -43,7 +44,7 @@ public class Skip implements ICommand {
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if(!memberVoiceState.inAudioChannel()) {
-            event.reply("Тебя нет в голосовом канале").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.skip.notFoundMemberInVoice.message")).queue();
             return;
         }
 
@@ -51,17 +52,17 @@ public class Skip implements ICommand {
         GuildVoiceState selfVoiceState = self.getVoiceState();
 
         if(!selfVoiceState.inAudioChannel()) {
-            event.reply("Подождите меня забыли!").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.skip.botInVoice.message")).queue();
             return;
         }
 
         if(selfVoiceState.getChannel() != memberVoiceState.getChannel()) {
-            event.reply("Тебя нет со мной вернись").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.skip.notFoundMemberInVoice.message")).queue();
             return;
         }
 
         GuildMusicManager guildMusicManager = PlayerManager.get().getGuildMusicManager(event.getGuild());
         guildMusicManager.getTrackScheduler().getPlayer().stopTrack();
-        event.reply("Пропущено").queue();
+        event.reply(getLangMessage(event.getGuild(), "command.slash.skip.skipMusic.message")).queue();
     }
 }

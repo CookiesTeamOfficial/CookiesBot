@@ -9,11 +9,12 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 import ru.dev.prizrakk.cookiesbot.util.Values;
 
 import java.util.List;
 
-public class Repeat implements ICommand {
+public class Repeat extends Utils implements ICommand {
     @Override
     public String getName() {
         return "repeat";
@@ -44,7 +45,7 @@ public class Repeat implements ICommand {
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if(!memberVoiceState.inAudioChannel()) {
-            event.reply("Тебя нет в голосовом канале").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.repeat.notFoundMemberInVoice.message")).queue();
             return;
         }
 
@@ -52,18 +53,18 @@ public class Repeat implements ICommand {
         GuildVoiceState selfVoiceState = self.getVoiceState();
 
         if(!selfVoiceState.inAudioChannel()) {
-            event.reply("Подождите меня забыли").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.repeat.botInVoice.message")).queue();
             return;
         }
 
         if(selfVoiceState.getChannel() != memberVoiceState.getChannel()) {
-            event.reply("Тебя нет со мной вернись ко мне").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.repeat.notFoundMemberInVoice.message")).queue();
             return;
         }
 
         GuildMusicManager guildMusicManager = PlayerManager.get().getGuildMusicManager(event.getGuild());
         Values.isRepeat = !guildMusicManager.getTrackScheduler().isRepeat();
         guildMusicManager.getTrackScheduler().setRepeat(Values.isRepeat);
-        event.reply("Щас на репите " + Values.isRepeat).queue();
+        event.reply(getLangMessage(event.getGuild(), "command.slash.repeat.isRepeat.message").replace("%isRepeat%" , Values.isRepeat + "")).queue();
     }
 }

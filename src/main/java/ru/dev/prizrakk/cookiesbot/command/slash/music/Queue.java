@@ -13,13 +13,14 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.util.Config;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 
-public class Queue implements ICommand {
+public class Queue extends Utils implements ICommand {
     @Override
     public String getName() {
         return "queue";
@@ -51,7 +52,7 @@ public class Queue implements ICommand {
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if(!memberVoiceState.inAudioChannel()) {
-            event.reply("Тебя нет в голосовом канале").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.queue.notFoundMemberInVoice.message")).queue();
             return;
         }
 
@@ -59,27 +60,27 @@ public class Queue implements ICommand {
         GuildVoiceState selfVoiceState = self.getVoiceState();
 
         if(!selfVoiceState.inAudioChannel()) {
-            event.reply("Меня забыли подождите").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.queue.notFoundBotInVoice.message")).queue();
             return;
         }
 
         if(selfVoiceState.getChannel() != memberVoiceState.getChannel()) {
-            event.reply("Тебя нет в "+ selfVoiceState.getChannel().getAsMention() +" зайди туда чтобы использовать команду").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.queue.memberInVoice.message").replace("%voiceChannel%", selfVoiceState.getChannel().getAsMention())).queue();
             return;
         }
 
         GuildMusicManager guildMusicManager = PlayerManager.get().getGuildMusicManager(event.getGuild());
         List<AudioTrack> queue = new ArrayList<>(guildMusicManager.getTrackScheduler().getQueue());
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("Текущая очередь");
+        embedBuilder.setTitle(getLangMessage(event.getGuild(), "command.slash.queue.embed.title.message"));
         if(queue.isEmpty()) {
-            embedBuilder.setDescription("очередь пустая как мой кошелек тоже пустой");
+            embedBuilder.setDescription(getLangMessage(event.getGuild(), "command.slash.queue.embed.descriptionErrNotFoundQueue.message"));
         }
         for(int i = 0; i < queue.size(); i++) {
             AudioTrackInfo info = queue.get(i).getInfo();
             embedBuilder.addField(i+1 + ":", info.title, false);
         }
-        embedBuilder.setFooter(config.years_author);
+        //embedBuilder.setFooter(config.years_author);
         event.replyEmbeds(embedBuilder.build()).queue();
     }
 }

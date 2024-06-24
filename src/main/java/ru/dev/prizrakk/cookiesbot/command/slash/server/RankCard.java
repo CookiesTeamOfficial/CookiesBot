@@ -11,6 +11,7 @@ import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.database.Database;
 import ru.dev.prizrakk.cookiesbot.database.DatabaseUtils;
 import ru.dev.prizrakk.cookiesbot.database.ExpVariable;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -25,7 +26,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RankCard implements ICommand {
+public class RankCard extends Utils implements ICommand {
     @Override
     public String getName() {
         return "rank";
@@ -53,39 +54,28 @@ public class RankCard implements ICommand {
         return CommandStatus.OK;
     }
 
-    private Database database;
-    private DatabaseUtils databaseUtils;
-
-    public RankCard(Database database) {
-        this.database = database;
-        this.databaseUtils = new DatabaseUtils(database);
-    }
-
-    ExpVariable expVariable;
-
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         User user = (event.getOption("user") != null) ? event.getOption("user").getAsUser() : event.getUser();
 
-        expVariable = databaseUtils.getPlayerStatsFromDatabase(user.getId(), event.getGuild().getId());
 
         try {
             String avatarUrl = user.getAvatarUrl();
             String effectiveName = user.getEffectiveName();
             String username = user.getName();
-            int level = expVariable.getLevel();
-            int experience = expVariable.getExp();
-            int maxExperience = expVariable.getMaxExp();
+            int level = getUserLevel(user, event.getGuild()).getLevel();
+            int experience = getUserLevel(user, event.getGuild()).getExp();
+            int maxExperience = getUserLevel(user, event.getGuild()).getMaxExp();
 
-            byte[] profileImage = generateProfileImage(avatarUrl, effectiveName, username, level, experience, maxExperience);
+            byte[] profileImage = generateProfileImage(event, avatarUrl, effectiveName, username, level, experience, maxExperience);
             event.replyFiles(FileUpload.fromData(profileImage, "profile_image.png")).queue();
         } catch (IOException e) {
             e.printStackTrace();
-            event.reply("Произошла ошибка при создании изображения").setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.rankCard.errorDrawImage.message")).setEphemeral(true).queue();
         }
     }
 
-    public static byte[] generateProfileImage(String avatarUrl, String effectiveName, String username, int level, int experience, int maxExperience) throws IOException {
+    public static byte[] generateProfileImage(SlashCommandInteractionEvent event, String avatarUrl, String effectiveName, String username, int level, int experience, int maxExperience) throws IOException {
         int width = 900;
         int height = 200;
 
@@ -113,11 +103,13 @@ public class RankCard implements ICommand {
 
         // Рисование уровня
         g.setFont(new Font("Arial", Font.BOLD, 22));
-        g.drawString("Уровень: " + level, 200, 140);
+        g.drawString(getLangMessage(event.getGuild(), "command.slash.rankCard.level.message").replace("%level%", level + ""), 200, 140);
 
         // Рисование опыта
         g.setFont(new Font("Arial", Font.BOLD, 22));
-        g.drawString("Опыт: " + experience + " / " + maxExperience, 340, 140);
+        g.drawString(getLangMessage(event.getGuild(), "command.slash.rankCard.experience.message")
+                .replace("%experience%", experience + "")
+                .replace("%maxExperience%", maxExperience + ""), 340, 140);
 
         // Рисование прогресс-бара
         int progressBarWidth = 600;

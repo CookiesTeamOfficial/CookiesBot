@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.awt.Color;
 import java.lang.management.ManagementFactory;
@@ -14,7 +15,7 @@ import java.lang.management.OperatingSystemMXBean;
 import java.sql.SQLException;
 import java.util.List;
 
-public class Status implements ICommand {
+public class Status extends Utils implements ICommand {
     @Override
     public String getName() {
         return "status";
@@ -73,17 +74,18 @@ public class Status implements ICommand {
 
         // Создание Embed
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("Статистика Бота")
-                .setColor(Color.GREEN)
-                .addField("Пинг до Discord API", gatewayPing + " ms", true)
-                .addField("Нагрузка на CPU", String.format("%.2f%% %s", systemLoad * 100, cpuProgressBar), true)
-                .addField("Нагрузка на RAM", String.format("%.2f%% %s", memoryUsage * 100, memoryProgressBar), true)
-                .addField("Свободная память", freeMemory + " MB", true)
-                .addField("Используемая память", (totalMemory - freeMemory) + " MB", true)
-                .addField("Всего доступной памяти", totalMemory + " MB", true)
-                .addField("Максимально доступная память", maxMemory + " MB", true)
-                .addField("Количество серверов", String.valueOf(guildCount), true)
-                .addField("Количество пользователей", String.valueOf(userCount), true);
+        embed.setTitle(getLangMessage(event.getGuild(), "command.slash.status.embed.title.message"));
+        embed.setColor(Color.GREEN);
+
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.ping.title.message"), gatewayPing + " ms", true);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.cpuLoad.title.message"), String.format("%.2f%% %s", systemLoad * 100, cpuProgressBar), true);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.ramLoad.title.message"), String.format("%.2f%% %s", memoryUsage * 100, memoryProgressBar), true);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.ramFree.title.message"), freeMemory + " MB", true);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.ramUsed.title.message"), (totalMemory - freeMemory) + " MB", true);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.ramAll.title.message"), totalMemory + " MB", true);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.ramMax.title.message"), maxMemory + " MB", true);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.serverCount.title.message"), String.valueOf(guildCount), true);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.userCount.title.message"), String.valueOf(userCount), true);
 
         event.replyEmbeds(embed.build()).queue();
     }
@@ -92,8 +94,7 @@ public class Status implements ICommand {
         int totalBars = 10;
         int filledBars = (int) (value * totalBars);
         int emptyBars = totalBars - filledBars;
-
-        StringBuilder progressBar = new StringBuilder();
+    StringBuilder progressBar = new StringBuilder();
         for (int i = 0; i < filledBars; i++) {
             progressBar.append("▰");
         }

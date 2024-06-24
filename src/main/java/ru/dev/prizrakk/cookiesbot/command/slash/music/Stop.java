@@ -10,10 +10,11 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.util.List;
 
-public class Stop implements ICommand {
+public class Stop extends Utils implements ICommand {
     @Override
     public String getName() {
         return "stop";
@@ -44,7 +45,7 @@ public class Stop implements ICommand {
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if(!memberVoiceState.inAudioChannel()) {
-            event.reply("Тебя нет в голосовом канале").queue();
+            event.reply(getLangMessage(event.getGuild(),"command.slash.stop.notFoundMemberInVoice.message")).queue();
             return;
         }
 
@@ -52,12 +53,12 @@ public class Stop implements ICommand {
         GuildVoiceState selfVoiceState = self.getVoiceState();
 
         if(!selfVoiceState.inAudioChannel()) {
-            event.reply("Подождите меня забыли").queue();
+            event.reply(getLangMessage(event.getGuild(),"command.slash.stop.botInVoice.message")).queue();
             return;
         }
 
         if(selfVoiceState.getChannel() != memberVoiceState.getChannel()) {
-            event.reply("Тебя нет со мной вернись").queue();
+            event.reply(getLangMessage(event.getGuild(),"command.slash.stop.notFoundMemberInVoice.message")).queue();
             return;
         }
 
@@ -65,6 +66,6 @@ public class Stop implements ICommand {
         TrackScheduler trackScheduler = guildMusicManager.getTrackScheduler();
         trackScheduler.getQueue().clear();
         trackScheduler.getPlayer().stopTrack();
-        event.reply("Остановлено").queue();
+        event.reply(getLangMessage(event.getGuild(),"command.slash.stop.stopMusic.message")).queue();
     }
 }
