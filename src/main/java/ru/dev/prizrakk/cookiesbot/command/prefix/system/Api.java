@@ -66,7 +66,7 @@ public class Api extends ListenerAdapter {
                         embed.setTitle("Error 403: FORBIDDEN");
                         embed.setDescription("Прошу прощения у вас нет прав на выполнение этой команды");
                         Config config = new Config();
-                        embed.setFooter(config.years_author);
+                        //embed.setFooter(config.years_author);
                         event.getChannel().sendMessageEmbeds(embed.build()).queue();
 
                     }
@@ -79,7 +79,7 @@ public class Api extends ListenerAdapter {
                     embed.addField("Форум", checkUri("https://forum.cookiesland.net"), true);
                     embed.addField("Админ панель", checkUri("https://panel.dev-prizrakk.ru"), true);
                     embed.addField("Example.com", checkUri("https://example.com"), true);
-                    embed.setFooter(config.years_author);
+                    //embed.setFooter(config.years_author);
                     event.getChannel().sendMessageEmbeds(embed.build()).queue();
                     break;
                     } else {
@@ -87,7 +87,7 @@ public class Api extends ListenerAdapter {
                         embed.setTitle("Error 403: FORBIDDEN");
                         embed.setDescription("Прошу прощения у вас нет прав на выполнение этой команды");
                         Config config = new Config();
-                        embed.setFooter(config.years_author);
+                        //embed.setFooter(config.years_author);
                         event.getChannel().sendMessageEmbeds(embed.build()).queue();
 
                     }
