@@ -1,9 +1,13 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import org.apache.commons.codec.language.bm.Lang;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
+import ru.dev.prizrakk.cookiesbot.database.Database;
+import ru.dev.prizrakk.cookiesbot.database.DatabaseUtils;
+import ru.dev.prizrakk.cookiesbot.database.GuildVariable;
 import ru.dev.prizrakk.cookiesbot.lavaplayer.GuildMusicManager;
 import ru.dev.prizrakk.cookiesbot.lavaplayer.PlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
@@ -12,12 +16,14 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import ru.dev.prizrakk.cookiesbot.util.Config;
+import ru.dev.prizrakk.cookiesbot.manager.LangManager;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 import ru.dev.prizrakk.cookiesbot.util.Values;
 
+import java.sql.SQLException;
 import java.util.List;
 
-public class NowPlaying implements ICommand {
+public class NowPlaying extends Utils implements ICommand {
     @Override
     public String getName() {
         return "nowplaying";
@@ -43,13 +49,15 @@ public class NowPlaying implements ICommand {
         return CommandStatus.ERROR;
     }
 
+
     @Override
     public void execute(SlashCommandInteractionEvent event) {
+
         Member member = event.getMember();
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if(!memberVoiceState.inAudioChannel()) {
-            event.reply("Тебя нет в голосовом канале я не могу запустить без тебя музыку :(").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.nowPlaying.notFoundMember.message")).queue();
             return;
         }
 
@@ -57,18 +65,18 @@ public class NowPlaying implements ICommand {
         GuildVoiceState selfVoiceState = self.getVoiceState();
 
         if(!selfVoiceState.inAudioChannel()) {
-            event.reply("Упс подождите меня я забыл зайти").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.nowPlaying.notFoundNotInVoice.message")).queue();
             return;
         }
 
         if(selfVoiceState.getChannel() != memberVoiceState.getChannel()) {
-            event.reply("Тебя нет в " + selfVoiceState.getChannel().getAsMention() + " со мной приди ко мне").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.nowPlaying.notFoundNotInVoice.message").replace("%voiceChannel%", selfVoiceState.getChannel().getAsMention())).queue();
             return;
         }
 
         GuildMusicManager guildMusicManager = PlayerManager.get().getGuildMusicManager(event.getGuild());
         if(guildMusicManager.getTrackScheduler().getPlayer().getPlayingTrack() == null) {
-            event.reply("Я уже за стойкой диджея!").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.nowPlaying.notFoundQueue.message")).queue();
             return;
         }
         AudioTrackInfo info = guildMusicManager.getTrackScheduler().getPlayer().getPlayingTrack().getInfo();
@@ -96,17 +104,25 @@ public class NowPlaying implements ICommand {
             }
         }
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("Я играю щас:");
-        embedBuilder.setDescription("**Имя:** `" + info.title + "`"
-                + "\n" + "**Автор:** `" + info.author + "`"
-                + "\n" + "**Ссылка:** **[клик](" + info.uri + ")**"
-                + "\n" + "**Репит:** `" + Values.isRepeat + "`");
-        embedBuilder.addField("Длительность", positionMinutes + "мин. " + positionSeconds + "сек. **/**" + durationMinutes + "мин. " + durationSeconds + "сек."
-                + "\n" + "**" + progressBar + "**", true);
+        embedBuilder.setTitle(getLangMessage(event.getGuild(), "command.slash.nowPlaying.title.message"));
+        String isRepeat = String.valueOf(Values.isRepeat);
+        embedBuilder.setDescription(getLangMessage(event.getGuild(), "command.slash.nowPlaying.description.message")
+                .replace("%title%", info.title)
+                .replace("%author%", info.author)
+                .replace("%uri%", info.uri)
+                .replace("%isRepeat%", isRepeat));
+        embedBuilder.addField(
+                getLangMessage(event.getGuild(), "command.slash.nowPlaying.field.title.message"),
+                getLangMessage(event.getGuild(), "command.slash.nowPlaying.field.description.message")
+                        .replace("%positionMinutes%", positionMinutes + "")
+                        .replace("%positionSeconds%", positionSeconds + "")
+                        .replace("%durationMinutes%", durationMinutes + "")
+                        .replace("%durationSeconds%", durationSeconds + ""),
+                true);
         String[] parts = info.uri.split("=");
         embedBuilder.setThumbnail("http://img.youtube.com/vi/" + parts[1] + "/mqdefault.jpg").toString();
-        Config config = new Config();
-        embedBuilder.setFooter(config.years_author);
+
+        //embedBuilder.setFooter(config.years_author);
         event.replyEmbeds(embedBuilder.build()).queue();
     }
 }
