@@ -4,20 +4,23 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAccessTokenTracker;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.tools.io.HttpInterfaceManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
-import ru.dev.prizrakk.cookiesbot.util.Config;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 import ru.dev.prizrakk.cookiesbot.util.Values;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlayerManager {
+public class PlayerManager extends Utils {
 
     private static PlayerManager INSTANCE;
     private final Map<Long, GuildMusicManager> guildMusicManagers = new HashMap<>();
@@ -27,6 +30,8 @@ public class PlayerManager {
         AudioSourceManagers.registerRemoteSources(audioPlayerManager);
         AudioSourceManagers.registerLocalSource(audioPlayerManager);
     }
+
+
 
     public static PlayerManager get() {
         if (INSTANCE == null) {
@@ -60,12 +65,14 @@ public class PlayerManager {
 
             @Override
             public void noMatches() {
-                event.getHook().sendMessage("Не удалось найти трек по запросу: " + trackURL).queue();
+                event.getHook().sendMessage(getLangMessage(event.getGuild(), "command.slash.play.notFoundTrackInURL.message")
+                        .replace("%trackURL%", trackURL)).queue();
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                event.getHook().sendMessage("Ошибка при загрузке трека: " + exception.getMessage()).queue();
+                event.getHook().sendMessage(getLangMessage(event.getGuild(), "command.slash.play.errorWithLoadTrack.message")
+                        .replace("%errorMessage%", exception.getMessage())).queue();
             }
         });
     }
@@ -73,14 +80,15 @@ public class PlayerManager {
     private void sendPlayingTrackEmbed(SlashCommandInteractionEvent event, AudioTrack track) {
         AudioTrackInfo info = track.getInfo();
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("Я играю щас:");
-        embedBuilder.setDescription("**Имя:** `" + info.title + "`");
-        embedBuilder.appendDescription("\n**Автор:** `" + info.author + "`");
-        embedBuilder.appendDescription("\n**Ссылка:  [клик](" + info.uri + ")**");
-        embedBuilder.appendDescription("\n**Репит:** `" + Values.isRepeat + "`");
+        embedBuilder.setTitle(getLangMessage(event.getGuild(), "command.slash.play.embed.title.message"));
+        embedBuilder.setDescription(getLangMessage(event.getGuild(), "command.slash.play.embed.description.message")
+                .replace("%title%", info.title)
+                .replace("%author%", info.author)
+                .replace("%uri%", info.uri)
+                .replace("%isRepeat%", Values.isRepeat + ""));
         String[] parts = info.uri.split("=");
         embedBuilder.setThumbnail("http://img.youtube.com/vi/" + parts[1] + "/mqdefault.jpg").toString();
-        embedBuilder.setFooter(new Config().years_author);
+        //embedBuilder.setFooter(new Config().years_author);
         event.getHook().sendMessageEmbeds(embedBuilder.build()).queue();
     }
 }
