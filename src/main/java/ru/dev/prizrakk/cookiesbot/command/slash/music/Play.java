@@ -10,13 +10,14 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.util.Config;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Play implements ICommand {
+public class Play extends Utils implements ICommand {
     @Override
     public String getName() {
         return "play";
@@ -44,15 +45,13 @@ public class Play implements ICommand {
         return CommandStatus.ERROR;
     }
 
-    Config config = new Config();
-
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         Member member = event.getMember();
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if (!memberVoiceState.inAudioChannel()) {
-            event.reply("Тебя нет в голосовом канале!").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.play.notFoundMemberInVoice.message")).queue();
             return;
         }
 
@@ -63,7 +62,7 @@ public class Play implements ICommand {
             event.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
         } else {
             if (!selfVoiceState.getChannel().equals(memberVoiceState.getChannel())) {
-                event.reply("Тебя нет в голосовом канале со мной вернись!").queue();
+                event.reply(getLangMessage(event.getGuild(), "command.slash.play.notFoundMemberInVoice.message")).queue();
                 return;
             }
         }
