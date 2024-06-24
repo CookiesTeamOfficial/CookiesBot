@@ -10,6 +10,7 @@ import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.util.Config;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
@@ -17,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserInfo implements ICommand {
+public class UserInfo extends Utils implements ICommand {
     @Override
     public String getName() {
         return "userinfo";
@@ -59,24 +60,12 @@ public class UserInfo implements ICommand {
         }
 
         switch (member.getOnlineStatus()) {
-            case UNKNOWN:
-                status = "<:Offline:1209207265165316187> Не известно";
-                break;
-            case IDLE:
-                status = "<:Idle:1209207266620866620> Не активен";
-                break;
-            case ONLINE:
-                status = "<:Online:1209207268281942047> Онлайн";
-                break;
-            case OFFLINE:
-                status = "<:Offline:1209207265165316187> Оффлайн";
-                break;
-            case INVISIBLE:
-                status = "<:Offline:1209207265165316187> Неведимый";
-                break;
-            case DO_NOT_DISTURB:
-                status = "<:Dnd:1209207263802171402> Занят";
-                break;
+            case UNKNOWN -> status = getLangMessage(event.getGuild(), "command.slash.userInfo.unknown.message");
+            case IDLE -> status = getLangMessage(event.getGuild(), "command.slash.userInfo.idle.message");
+            case ONLINE -> status = getLangMessage(event.getGuild(), "command.slash.userInfo.online.message");
+            case OFFLINE -> status = getLangMessage(event.getGuild(), "command.slash.userInfo.offline.message");
+            case INVISIBLE -> status = getLangMessage(event.getGuild(), "command.slash.userInfo.invisible.message");
+            case DO_NOT_DISTURB -> status = getLangMessage(event.getGuild(), "command.slash.userInfo.dnd.message");
         }
         OffsetDateTime createTime = user.getTimeCreated();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -84,19 +73,18 @@ public class UserInfo implements ICommand {
         OffsetDateTime createTimeG = member.getTimeJoined();
         String formattedCreateTimeG = createTimeG.format(formatter);
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("Информация о пользователе");
+        embed.setTitle(getLangMessage(event.getGuild(), "command.slash.userInfo.embed.title.message"));
         embed.setThumbnail(user.getAvatarUrl());
-        embed.setDescription("Вы можете добавить свой статус кастомный!");
-        embed.addField("Основная информация","**Имя:** " + user.getGlobalName() + " (" + user.getName() + ")"
-                + "\n" + "**Дата создания:** " + formattedCreateTime
-                + "\n" + "**Присоединился:** " + formattedCreateTimeG
-                + "\n" + "**Статус:** " + status
-                + "\n" + "**Имя пользователя:** " + user.getGlobalName()
-                + "\n" + "", false);
-        embed.addField("Репутация", "0", true);
-        embed.addField("Уровень", "0", true);
-        embed.addField("Опыт", "0", true);
-        embed.setFooter(config.years_author);
+        embed.setDescription(getLangMessage(event.getGuild(), "command.slash.userInfo.embed.description.message"));
+        embed.addField("Основная информация",getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.description.userInfo.message")
+                .replace("%userGlobal%", user.getGlobalName()).replace("%user%", user.getName())
+                .replace("%formattedCreateTime%", formattedCreateTime)
+                .replace("%formattedCreateTimeGuild%", formattedCreateTimeG)
+                .replace("%status%", status), false);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.title.rep.message"), getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.description.rep.message"), true);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.title.level.message"), getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.description.level.message").replace("%level%",getUserLevel(event.getUser(), event.getGuild()).getLevel() + "") + "", true);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.title.experience.message"), getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.description.experience.message").replace("%experience%", getUserLevel(event.getUser(), event.getGuild()).getExp() + "") + "", true);
+        //embed.setFooter(config.years_author);
         event.replyEmbeds(embed.build()).queue();
     }
 

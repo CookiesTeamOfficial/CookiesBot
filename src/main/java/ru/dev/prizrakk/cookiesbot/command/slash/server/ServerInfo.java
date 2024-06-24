@@ -9,8 +9,8 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
-import ru.dev.prizrakk.cookiesbot.util.Config;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ServerInfo implements ICommand {
+public class ServerInfo extends Utils implements ICommand {
     @Override
     public String getName() {
         return "serverinfo";
@@ -42,8 +42,6 @@ public class ServerInfo implements ICommand {
     public CommandStatus getStatus() {
         return CommandStatus.OK;
     }
-
-    Config config = new Config();
 
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
@@ -74,87 +72,41 @@ public class ServerInfo implements ICommand {
         });
         for (Member member : guild.getMembers()) {
             switch (member.getOnlineStatus()) {
-                case ONLINE:
-                    onlineUsers++;
-                    break;
-                case IDLE:
-                    idleUsers++;
-                    break;
-                case DO_NOT_DISTURB:
-                    dndUsers++;
-                    break;
-                case OFFLINE:
-                    offlineUsers++;
-                    break;
-                default:
-                    break;
+                case ONLINE -> onlineUsers++;
+                case IDLE -> idleUsers++;
+                case DO_NOT_DISTURB -> dndUsers++;
+                case OFFLINE -> offlineUsers++;
             }
         }
         for(Category category : categories) {
             for(GuildChannel channel : category.getChannels()) {
                 // Определяем тип канала и увеличиваем счетчик
                 switch(channel.getType()) {
-                    case TEXT:
-                        textChannels++;
-                        break;
-                    case VOICE:
-                        voiceChannels++;
-                        break;
-                    case CATEGORY:
-                        categoryChannels++;
-                        break;
-                    case NEWS:
-                        newsChannels++;
-                        break;
-                    case FORUM:
-                        forumChannels++;
-                        break;
-                    case STAGE:
-                        stageChannels++;
-                        break;
+                    case TEXT -> textChannels++;
+                    case VOICE -> voiceChannels++;
+                    case CATEGORY -> categoryChannels++;
+                    case NEWS -> newsChannels++;
+                    case FORUM -> forumChannels++;
+                    case STAGE -> stageChannels++;
                 }
             }
         }
 
         switch (event.getGuild().getBoostTier()) {
-            case NONE:
-                boostTier = "<:Boost0:1209375787040641054> Буст уровень: **Отсутствует**";
-                break;
-            case TIER_1:
-                boostTier = "<:Boost1:1209375792685907978> Буст уровень: **1**";
-                break;
-            case TIER_2:
-                boostTier = "<:Boost2Dark:1209375790459002880> Буст уровень: **2**";
-                break;
-            case TIER_3:
-                boostTier = "<:Boost3Dark:1209375788739076136> Буст уровень: **3**";
-                break;
-            case UNKNOWN:
-                boostTier = "<:Boost0:1209375787040641054> Буст уровень: **Не опознан! Свяжитесь с разработчиком бота!**";
-                break;
-            default:
-                boostTier = "<:Boost0:1209375787040641054> Буст уровень: **Бип бип буп буп**";
-                break;
+            case NONE -> boostTier = "<:Boost0:1209375787040641054> " + getLangMessage(guild, "command.slash.serverInfo.boostTier0.message");
+            case TIER_1 -> boostTier = "<:Boost1:1209375792685907978> " + getLangMessage(guild, "command.slash.serverInfo.boostTier1.message");
+            case TIER_2 -> boostTier = "<:Boost2Dark:1209375790459002880> " + getLangMessage(guild, "command.slash.serverInfo.boostTier2.message");
+            case TIER_3 -> boostTier = "<:Boost3Dark:1209375788739076136> " + getLangMessage(guild, "command.slash.serverInfo.boostTier3.message");
+            case UNKNOWN -> boostTier = "<:Boost0:1209375787040641054> " + getLangMessage(guild, "command.slash.serverInfo.boostTierUnknown.message");
+            default -> boostTier = "<:Boost0:1209375787040641054> " + getLangMessage(guild, "command.slash.serverInfo.boostTierNotFound.message");
         }
         switch (guild.getVerificationLevel()) {
-            case UNKNOWN:
-                verifLevel = "Не опознан";
-                break;
-            case NONE:
-                verifLevel = "Отсутствует";
-                break;
-            case LOW:
-                verifLevel = "Минимальный";
-                break;
-            case MEDIUM:
-                verifLevel = "Оптимальный";
-                break;
-            case HIGH:
-                verifLevel = "Максимальный";
-                break;
-            case VERY_HIGH:
-                verifLevel = "БОЖЕСТВЕНЫЙ!!!!!";
-                break;
+            case UNKNOWN -> verifLevel = getLangMessage(guild, "command.slash.serverInfo.verificationLevel.unknown.message");
+            case NONE -> verifLevel = getLangMessage(guild, "command.slash.serverInfo.verificationLevel.none.message");
+            case LOW -> verifLevel = getLangMessage(guild, "command.slash.serverInfo.verificationLevel.low.message");
+            case MEDIUM -> verifLevel = getLangMessage(guild, "command.slash.serverInfo.verificationLevel.medium.message");
+            case HIGH -> verifLevel = getLangMessage(guild, "command.slash.serverInfo.verificationLevel.high.message");
+            case VERY_HIGH -> verifLevel = getLangMessage(guild, "command.slash.serverInfo.verificationLevel.veryHigh.message");
         }
         OffsetDateTime createTime = event.getGuild().getTimeCreated();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -163,31 +115,36 @@ public class ServerInfo implements ICommand {
 
         EmbedBuilder embed = new EmbedBuilder();
         embed.setThumbnail(guild.getIconUrl());
-        embed.setTitle("Информация о " + guild.getName());
-        embed.setDescription("<:DateTime:1209378875293962240>Дата создания: **" + formattedCreateTime + "**"
-                + "\n" + "<:location:1209386794513203241> Локация: **" + guild.getLocale().getLanguageName() + "**"
-                + "\n" + "<:Security:1209378873972891648>Уровень безопастности: **" + verifLevel + "**"
-                + "\n" + boostTier
-                + "\n" + "<:1Month:1209386796077678592> Количество бустов: **" + guild.getBoostCount() + "**"
-                + "\n" + "<:6Months:1209386799231926302> Роль буста: **" + "Error 512: Bad Gateway" + "**"
-                + "\n" + "<:Owner:1209394164316373043> Создатель: " + guild.getOwner().getAsMention());
-        embed.addField("Участники: ", " "
-                + "\n" + ":busts_in_silhouette: Всего: **" + guild.getMemberCount() + "**"
-                + "\n" + ":bust_in_silhouette: Людей: **" + users + "**"
-                + "\n" + ":robot: Боты: **" + bots + "**", true);
-        embed.addField("По статусам", " "
-                + "\n" + "<:Online:1209207268281942047> Онлайн: **" + onlineUsers + "**"
-                + "\n" + "<:Idle:1209207266620866620> Неактивны: **" + idleUsers + "**"
-                + "\n" + "<:Dnd:1209207263802171402> Не беспокоить: **" + dndUsers + "**"
-                + "\n" + "<:Offline:1209207265165316187> Офлайн: **" + offlineUsers + "**", true);
-        embed.addField("Каналы", " "
-                + "\n" + "<:CategoryMobile:1209375825980428328> Категории: **" + categoryChannels + "**"
-                + "\n" + "<:Text:1209198697297092618> Текстовые: **" + textChannels + "**"
-                + "\n" + "<:Voice:1209198695619493999> Голосовые: **" + voiceChannels + "**"
-                + "\n" + "<:News:1209198692058271794> Новостные: **" + newsChannels + "**"
-                + "\n" + "<:Forum:1209198698702049311> Форумы: **" + forumChannels + "**"
-                + "\n" + "<:Stage:1209198694331846676> Stage: **" + stageChannels + "**", true);
-        embed.setFooter(config.years_author);
+        embed.setTitle(getLangMessage(guild, "command.slash.serverInfo.embed.title.message").replace("%guildName%", guild.getName()));
+        embed.setDescription(getLangMessage(guild, "command.slash.serverInfo.embed.description.message")
+                .replace("%createTime%", formattedCreateTime)
+                .replace("%location%", guild.getLocale().getLanguageName())
+                .replace("%verifyLevel%", verifLevel)
+                .replace("%boostTier%", boostTier)
+                .replace("%boostCount%", guild.getBoostCount() + "")
+                .replace("%boostRole%", "Error 512: Bad Gateway")
+                .replace("%guildOwner%", guild.getOwner().getAsMention())
+                .replace("%language%", getGuildOnSlash(guild).getLang()));
+        embed.addField(getLangMessage(guild, "command.slash.serverInfo.embed.field.title.members.message"), " "
+                + getLangMessage(guild, "command.slash.serverInfo.embed.field.description.members.message")
+                .replace("%allUsers%", guild.getMemberCount() + "")
+                .replace("%users%", users + "")
+                .replace("%bots%", bots + ""), true);
+        embed.addField(getLangMessage(guild, "command.slash.serverInfo.field.title.status.message"), " "
+                + getLangMessage(guild, "command.slash.serverInfo.field.description.status.message")
+                .replace("%onlineUsers%", onlineUsers + "")
+                .replace("%idleUsers%", idleUsers + "")
+                .replace("%dndUsers%", dndUsers + "")
+                .replace("%offlineUsers%", offlineUsers + ""), true);
+        embed.addField(getLangMessage(guild, "command.slash.serverInfo.field.title.channel.message"), " "
+                + getLangMessage(guild, "command.slash.serverInfo.field.description.channel.message")
+                .replace("%categoryChannels%", categoryChannels + "")
+                .replace("%textChannels%", textChannels + "")
+                .replace("%voiceChannels%", voiceChannels + "")
+                .replace("%newsChannels%", newsChannels + "")
+                .replace("%forumChannels%", forumChannels + "")
+                .replace("%stageChannels%", stageChannels + ""), true);
+
         event.replyEmbeds(embed.build()).queue();
     }
 }
