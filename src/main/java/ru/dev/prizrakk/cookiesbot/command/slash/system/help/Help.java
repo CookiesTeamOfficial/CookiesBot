@@ -9,13 +9,14 @@ import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Help implements ICommand {
+public class Help extends Utils implements ICommand {
     @Override
     public String getName() {
         return "help";
@@ -40,22 +41,24 @@ public class Help implements ICommand {
         return CommandStatus.OK;
     }
 
-    private List<ICommand> commands = new ArrayList<>();
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(new Color(255, 104, 0));
-        embed.setTitle("Справочная информация о CookiesBot", "https://cookiesbot.dev-prizrakk.ru");
-        embed.setDescription("Справочная информация по боту CookiesBot");
-        embed.setFooter("Чем могу помочь? XD");
+        embed.setTitle(getLangMessage(event.getGuild(), "command.slash.help.embed.title.message"), "https://cookiesbot.dev-prizrakk.ru");
+        embed.setDescription(getLangMessage(event.getGuild(), "command.slash.help.embed.description.message"));
+        embed.setFooter(getLangMessage(event.getGuild(), "command.slash.help.embed.footer.message"));
         event.replyEmbeds(embed.build()).setActionRow(
                 StringSelectMenu.create("helpmenu")
-                        .addOptions(SelectOption.of("Информация", "info")
-                                .withDescription("Покажет вам информацию о боте и технической части")
+                        .addOptions(SelectOption.of(getLangMessage(event.getGuild(), "command.slash.help.actionRow.selectMenu.info.title.message"), "info")
+                                .withDescription(getLangMessage(event.getGuild(), "command.slash.help.actionRow.selectMenu.info.description.message"))
                                 .withEmoji(Emoji.fromUnicode("ℹ️")))
-                        .addOptions(SelectOption.of("Команды", "command")
-                                .withDescription("Покажет все возможные команды")
+                        .addOptions(SelectOption.of(getLangMessage(event.getGuild(), "command.slash.help.actionRow.selectMenu.command.title.message"), "command")
+                                .withDescription(getLangMessage(event.getGuild(), "command.slash.help.actionRow.selectMenu.command.description.message"))
                                 .withEmoji(Emoji.fromUnicode("⌨️")))
+                        .addOptions(SelectOption.of(getLangMessage(event.getGuild(), "command.slash.help.actionRow.selectMenu.settings.title.message"), "settings")
+                                .withDescription(getLangMessage(event.getGuild(), "command.slash.help.actionRow.selectMenu.settings.description.message"))
+                                .withEmoji(Emoji.fromUnicode("⚙️")))
                         .build()
         ).queue();
     }
