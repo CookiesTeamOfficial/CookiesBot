@@ -48,12 +48,13 @@ public class Database extends Utils {
                 "\t`ban` INT\n" +
                 ");";
         statement.execute(user_info);
-        getLogger().debug("Проверка таблицы settings");
+        getLogger().debug("Проверка таблицы guild_settings");
         String settings = "CREATE TABLE IF NOT EXISTS `guild_settings` (\n" +
                 "\t`id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "\t`UUID` INT,\n" +
                 "\t`dev` VARCHAR(128),\n" +
                 "\t`owner` VARCHAR(128),\n" +
+                "\t`lang` VARCHAR(128),\n" +
                 "\t`audit_message` VARCHAR(128),\n" +
                 "\t`audit_manager` VARCHAR(128),\n" +
                 "\t`audit_blacklist` VARCHAR(128),\n" +
@@ -82,19 +83,44 @@ public class Database extends Utils {
         statement.close();
         getLogger().debug("Проверка/Создание базы данных прошло успешно!");
     }
+    public GuildVariable findGuild(String UUID) throws SQLException {
+        PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM guild_settings WHERE UUID = ?");
+        statement.setString(1, UUID);
+        ResultSet resultSet = statement.executeQuery();
+        GuildVariable guildVariable;
+        if (resultSet.next()) {
+            guildVariable = new GuildVariable(
+                    resultSet.getString("UUID"),
+                    resultSet.getString("dev"),
+                    resultSet.getString("owner"),
+                    resultSet.getString("lang"),
+                    resultSet.getString("audit_message"),
+                    resultSet.getString("audit_manager"),
+                    resultSet.getString("audit_blacklist"),
+                    resultSet.getString("balance"),
+                    resultSet.getInt("ban")
+            );
+            statement.close();
+            return guildVariable;
+        }
+        statement.close();
+        return null;
+    }
     public UserVariable findPlayerStatsByNICK(String UUID) throws SQLException {
-
         PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM user_info WHERE UUID = ?");
         statement.setInt(1, Integer.parseInt(UUID));
-
         ResultSet resultSet = statement.executeQuery();
-
         UserVariable UserVariable;
         if(resultSet.next()){
-
-            //GDBV = new GDBV(resultSet.getString("nick"), resultSet.getInt(), resultSet.getString("prefix"), resultSet.getInt("rep"), resultSet.getInt("deaths"), resultSet.getInt("kills"), resultSet.getLong("blocks_broken"), resultSet.getDouble("balance"), resultSet.getDate("last_login"), resultSet.getDate("last_logout"));
-            UserVariable = new UserVariable(resultSet.getString("name"), resultSet.getInt("balance"), resultSet.getInt("warn_count"), resultSet.getInt("level"), resultSet.getInt("xp"), resultSet.getInt("ban") ,resultSet.getString("UUID"));
-            //String name, int id, int balance, int warn_count, int level, int xp, int ban, int UUID
+            UserVariable = new UserVariable(
+                    resultSet.getString("name"),
+                    resultSet.getInt("balance"),
+                    resultSet.getInt("warn_count"),
+                    resultSet.getInt("level"),
+                    resultSet.getInt("xp"),
+                    resultSet.getInt("ban"),
+                    resultSet.getString("UUID")
+            );
             statement.close();
 
             return UserVariable;
@@ -115,10 +141,14 @@ public class Database extends Utils {
 
         ExpVariable expVariable;
         if(resultSet.next()){
+            expVariable = new ExpVariable(
+                    resultSet.getString("user_id"),
+                    resultSet.getString("guild_id"),
+                    resultSet.getInt("exp"),
+                    resultSet.getInt("maxExp"),
+                    resultSet.getInt("level")
+            );
 
-            //GDBV = new GDBV(resultSet.getString("nick"), resultSet.getInt(), resultSet.getString("prefix"), resultSet.getInt("rep"), resultSet.getInt("deaths"), resultSet.getInt("kills"), resultSet.getLong("blocks_broken"), resultSet.getDouble("balance"), resultSet.getDate("last_login"), resultSet.getDate("last_logout"));
-            expVariable = new ExpVariable(resultSet.getString("user_id"), resultSet.getString("guild_id"), resultSet.getInt("exp"), resultSet.getInt("maxExp"), resultSet.getInt("level"));
-            //String name, int id, int balance, int warn_count, int level, int xp, int ban, int UUID
             statement.close();
 
             return expVariable;
@@ -161,6 +191,39 @@ public class Database extends Utils {
 
         statement.close();
 
+    }
+    public void createGuildStats(GuildVariable guildVariable) throws SQLException {
+        PreparedStatement statement = getConnection()
+                .prepareStatement("INSERT INTO guild_settings(UUID, dev, owner, lang, audit_message, audit_manager, audit_blacklist, balance, ban) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        statement.setString(1, guildVariable.getUUID());
+        statement.setString(2, guildVariable.getDev());
+        statement.setString(3, guildVariable.getOwner());
+        statement.setString(4, guildVariable.getLang());
+        statement.setString(5, guildVariable.getAuditMessage());
+        statement.setString(6, guildVariable.getAuditManager());
+        statement.setString(7, guildVariable.getAuditBlacklist());
+        statement.setString(8, guildVariable.getBalance());
+        statement.setInt(9, guildVariable.getBan());
+
+        statement.executeUpdate();
+        statement.close();
+    }
+
+    public void updateGuildStats(GuildVariable guildVariable) throws SQLException {
+        PreparedStatement statement = getConnection()
+                .prepareStatement("UPDATE guild_settings SET dev = ?, owner = ?, lang = ?, audit_message = ?, audit_manager = ?, audit_blacklist = ?, balance = ?, ban = ? WHERE UUID = ?");
+        statement.setString(1, guildVariable.getDev());
+        statement.setString(2, guildVariable.getOwner());
+        statement.setString(3, guildVariable.getLang());
+        statement.setString(4, guildVariable.getAuditMessage());
+        statement.setString(5, guildVariable.getAuditManager());
+        statement.setString(6, guildVariable.getAuditBlacklist());
+        statement.setString(7, guildVariable.getBalance());
+        statement.setInt(8, guildVariable.getBan());
+        statement.setString(9, guildVariable.getUUID());
+
+        statement.executeUpdate();
+        statement.close();
     }
     public void updateUserExpStats(ExpVariable expVariable) throws SQLException {
 
