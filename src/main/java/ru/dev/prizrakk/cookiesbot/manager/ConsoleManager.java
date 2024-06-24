@@ -3,46 +3,46 @@ package ru.dev.prizrakk.cookiesbot.manager;
 import java.io.Console;
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
-public class ConsoleManager extends ListenerAdapter
+public class ConsoleManager extends Utils
 {
     public JDA jda;
     Console console = System.console();
     public void console() {
         Console console = System.console();
         if (console == null) {
-            System.out.println("Консоль не доступна!");
+            getLogger().warn(LangManager.getMessage("console.not-work.message"));
             return;
         }
 
         // Пример команды с табуляцией
-        console.printf("Пример команды с табуляцией:%n");
-        console.printf("Команда\tОписание%n");
-        console.printf("-------\t-----------%n");
-        console.printf("help\tПоказать список команд%n");
-        console.printf("info\tПоказать информацию%n");
-        console.printf("exit\tВыйти из программы%n");
+        getLogger().info("Example command with tabs:%n");
+        getLogger().info("Command\tDescription%n");
+        getLogger().info("-------\t----------%n");
+        getLogger().info("help\tShow list of commands%n");
+        getLogger().info("info\tShow information%n");
+        getLogger().info("exit\tExit program%n");
 
         while (true) {
             // Считывание введенной команды
             String input = console.readLine("$: ");
             switch (input.toLowerCase()) {
                 case "help":
-                    console.printf("Список доступных команд:%n");
-                    console.printf("help\tПоказать список команд%n");
-                    console.printf("info\tПоказать информацию%n");
-                    console.printf("exit\tВыйти из программы%n");
+                    getLogger().info("List of available commands:%n");
+                    getLogger().info("help\tShow list of commands%n");
+                    getLogger().info("info\tShow information%n");
+                    getLogger().info("exit\tExit program%n");
                     break;
                 case "info":
-                    console.printf("Информация: Это пример консольной программы%n");
+                    getLogger().info("Info: This is an example console program%n");
                     break;
                 case "exit":
-                    console.printf("Программа завершена%n");
+                    getLogger().info("Program completed%n");
                     System.exit(0);
                     break;
                 default:
-                    console.printf("Неверная команда%n");
+                    getLogger().info("Invalid command%n");
                     break;
             }
         }
