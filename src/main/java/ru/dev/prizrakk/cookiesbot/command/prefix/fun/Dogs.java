@@ -5,16 +5,33 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import ru.dev.prizrakk.cookiesbot.database.Database;
+import ru.dev.prizrakk.cookiesbot.database.DatabaseUtils;
+import ru.dev.prizrakk.cookiesbot.database.GuildVariable;
+import ru.dev.prizrakk.cookiesbot.manager.LangManager;
 
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Dogs extends ListenerAdapter {
+
+    private DatabaseUtils databaseUtils;
+
+    public Dogs(Database database) {
+        this.databaseUtils = new DatabaseUtils(database);
+    }
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        GuildVariable guildVariable;
+        try {
+            guildVariable = databaseUtils.getGuildFromDatabase(event.getGuild());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         String[] message = event.getMessage().getContentRaw().split(" ", 2);
 
         // Проверяем, что сообщение начинается с вашего префикса
@@ -44,10 +61,10 @@ public class Dogs extends ListenerAdapter {
                 }
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.setColor(new Color(0, 0, 0));
-                embed.setTitle("Вот ваша собачка :)");
+                embed.setTitle(LangManager.getMessage(guildVariable.getLang(),"command.prefix.dogs.message"));
                 embed.setImage(imageUrl);
 
-                Button button = Button.link(imageUrl, "Ссылка на собаку");
+                Button button = Button.link(imageUrl, LangManager.getMessage(guildVariable.getLang(),"command.prefix.dogs.button.message"));
                 event.getChannel().sendMessageEmbeds(embed.build()).setActionRow(button).queue();
             }
         }
