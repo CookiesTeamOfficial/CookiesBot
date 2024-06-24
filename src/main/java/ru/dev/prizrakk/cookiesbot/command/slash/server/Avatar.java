@@ -9,12 +9,13 @@ import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.util.Config;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Avatar implements ICommand {
+public class Avatar extends Utils implements ICommand {
     @Override
     public String getName() {
         return "avatar";
@@ -44,18 +45,16 @@ public class Avatar implements ICommand {
     Config config = new Config();
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
-        User user = null;
-
+        User user;
         if (event.getOption("user") != null) {
             user = event.getOption("user").getAsUser();
         } else {
             user = event.getUser();
         }
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("Аватарка " + user.getName());
+        embed.setTitle(getLangMessage(event.getGuild(), "command.slash.avatar.embed.title.message").replace("%user%", user.getName()));
         embed.setImage(user.getAvatarUrl());
-        Config config = new Config();
-        embed.setFooter(config.years_author);
+        embed.setFooter(getLangMessage(event.getGuild(), "command.slash.avatar.embed.footer.message"));
         event.replyEmbeds(embed.build()).queue();
     }
 }
