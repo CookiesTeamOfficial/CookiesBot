@@ -10,13 +10,14 @@ import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.util.Config;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Mute implements ICommand {
+public class Mute extends Utils implements ICommand {
     @Override
     public String getName() {
         return "mute";
@@ -50,47 +51,45 @@ public class Mute implements ICommand {
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         Member member = event.getOption("user").getAsMember();
         if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) || !event.getMember().hasPermission(Permission.BAN_MEMBERS) || !event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
-            event.reply("У вас не достаточно прав для совершения данного действия!").queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.mute.noPermission.message")).queue();
             return;
         }
         if (member == null) {
-            event.reply("Не удалось найти пользователя.").setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.mute.notFoundMember.message")).setEphemeral(true).queue();
             return;
         }
 
         String time = event.getOption("duration").getAsString();
         if (time == null || time.isEmpty()) {
-            event.reply("Необходимо указать длительность.").setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.mute.incorrectDuration.message")).setEphemeral(true).queue();
             return;
         }
 
         long milliseconds = parseDurationToMilliseconds(time);
         if (milliseconds <= 0) {
-            event.reply("Некорректное время.").setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.mute.incorrectTime.message")).setEphemeral(true).queue();
             return;
         }
 
         String reason = event.getOption("reason").getAsString();
         if (reason == null || reason.isEmpty()) {
-            event.reply("Необходимо указать причину.").setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.mute.incorrectReason.message")).setEphemeral(true).queue();
             return;
         }
-
-        Config config = new Config();
 
         try {
             member.timeoutFor(milliseconds, TimeUnit.MILLISECONDS).reason(reason).queue();
         } catch (Exception e) {
-            event.reply("Не удалось замутить пользователя: " + e.getMessage()).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getGuild(), "command.slash.mute.errorMuteUser.message").replace("%errorLog%", e.getMessage())).setEphemeral(true).queue();
             return;
         }
 
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("Пользователь замучен!");
-        embed.addField("Нарушитель", member.getAsMention(), true);
-        embed.addField("Время наказания", time, true);
-        embed.addField("Причина", reason, true);
-        embed.setFooter(config.years_author);
+        embed.setTitle(getLangMessage(event.getGuild(), "command.slash.mute.successfulMute.title.message"));
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.mute.successfulMute.field.breaker.message"), member.getAsMention(), true);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.mute.successfulMute.field.timePunishment.message"), time, true);
+        embed.addField(getLangMessage(event.getGuild(), "command.slash.mute.successfulMute.field.reason.message"), reason, true);
+        //embed.setFooter(config.years_author);
         //sendAudit(event);
         event.replyEmbeds(embed.build()).setEphemeral(true).queue();
     }
@@ -144,7 +143,7 @@ public class Mute implements ICommand {
         embed.addField("Время наказания", event.getOption("duration").getAsString(), true);
         embed.addField("Причина", event.getOption("reason").getAsString(), true);
         embed.addField("Модератор", event.getMember().getAsMention(), true);
-        embed.setFooter(config.years_author);
+        //embed.setFooter(config.years_author);
 
         event.getGuild().getTextChannelById(logChannelId).sendMessageEmbeds(embed.build()).queue();
     }
