@@ -11,6 +11,7 @@ import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.database.Database;
 import ru.dev.prizrakk.cookiesbot.database.DatabaseUtils;
 import ru.dev.prizrakk.cookiesbot.database.ExpVariable;
+import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class LeaderBoard implements ICommand {
+public class LeaderBoard extends Utils implements ICommand {
     private static final int USERS_PER_PAGE = 10;
 
     private Database database;
@@ -100,24 +101,26 @@ public class LeaderBoard implements ICommand {
         int endIndex = Math.min(startIndex + USERS_PER_PAGE, allStats.size());
 
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("Топ пользователей в системе уровней");
+        embed.setTitle(getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.title.message"));
         embed.setColor(Color.ORANGE);
-        embed.setDescription("Ты на " + userRank + "месте!");
+        embed.setDescription(getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.description.message").replace("%userRank%", userRank + ""));
 
         for (int i = startIndex; i < endIndex; i++) {
             ExpVariable stats = allStats.get(i);
             Member member = event.getGuild().getMemberById(stats.getUserID());
             embed.addField((i + 1) + ". " + member.getEffectiveName(),
-                    "Уровень: " + stats.getLevel() + " | Опыт: " + stats.getExp(), false);
+                    getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.field.message")
+                            .replace("%userLevel%", stats.getLevel() + "")
+                            .replace("%userExp%", stats.getExp() + ""),false);
         }
 
         List<Button> buttons = new ArrayList<>();
         if (pageIndex > 0) {
-            buttons.add(Button.primary("leaderboard_prev_" + (pageIndex - 1), "Назад"));
+            buttons.add(Button.primary("leaderboard_prev_" + (pageIndex - 1), getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.button.prev.message")));
         }
-        buttons.add(Button.danger("leaderboard_delete", "Удалить"));
+        buttons.add(Button.danger("leaderboard_delete", getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.button.delete.message")));
         if (endIndex < allStats.size()) {
-            buttons.add(Button.primary("leaderboard_next_" + (pageIndex + 1), "Вперед"));
+            buttons.add(Button.primary("leaderboard_next_" + (pageIndex + 1), getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.button.next.message")));
         }
 
         event.replyEmbeds(embed.build()).addActionRow(buttons).queue();
