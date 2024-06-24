@@ -14,7 +14,7 @@ public class OnLeft extends ListenerAdapter {
         embed.setTitle("Покинул сервер! :c " + event.getGuild().getName());
         embed.setDescription("Пока " + event.getMember().getAsMention() +"!");
         embed.setImage("https://i.imgur.com/QRrTwiV.gif");
-        embed.setFooter(config.years_author);
+        //embed.setFooter(config.years_author);
         event.getGuild().getTextChannelById(welcome).sendMessageEmbeds(embed.build()).queue();
     }
 }
