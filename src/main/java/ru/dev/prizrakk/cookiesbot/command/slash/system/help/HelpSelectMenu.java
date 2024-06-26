@@ -126,7 +126,7 @@ public class HelpSelectMenu extends ListenerAdapter {
                     category = CommandCategory.OTHER;
                     break;
                 default:
-                    embed.setDescription("command.interact.helpCommand.embed.notFoundCategory.message");
+                    embed.setDescription(Utils.getLangMessage(event.getGuild(), "command.interact.helpCommand.embed.notFoundCategory.message"));
                     category = null;
                     break;
             }
