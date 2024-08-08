@@ -29,11 +29,11 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: Moving the bot.
+    - name: Moving file bot.
       run: |
           mkdir -p /home/runner/work/CookiesBot/CookiesBot/builds
           mv /home/runner/work/CookiesBot/CookiesBot/target/* /home/runner/work/CookiesBot/CookiesBot/builds
-    - name: Upload plugin
+    - name: Upload bot
       uses: actions/upload-artifact@v1
       with:
         name: plugin
