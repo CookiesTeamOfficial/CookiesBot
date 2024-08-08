@@ -3,6 +3,7 @@ package ru.dev.prizrakk.cookiesbot.command.slash.server;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -45,6 +46,10 @@ public class ServerInfo extends Utils implements ICommand {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
+        if (event.getChannelType() != ChannelType.TEXT) {
+            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            return;
+        }
         Guild guild = event.getGuild();
         List<Category> categories = guild.getCategories();
         AtomicInteger users = new AtomicInteger();

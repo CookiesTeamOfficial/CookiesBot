@@ -1,5 +1,6 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.music;
 
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
@@ -9,7 +10,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import ru.dev.prizrakk.cookiesbot.util.Config;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.net.URI;
@@ -47,6 +47,10 @@ public class Play extends Utils implements ICommand {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
+        if (event.getChannelType() != ChannelType.TEXT) {
+            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            return;
+        }
         Member member = event.getMember();
         GuildVoiceState memberVoiceState = member.getVoiceState();
 

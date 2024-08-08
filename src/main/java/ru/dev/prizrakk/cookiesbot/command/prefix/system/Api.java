@@ -10,16 +10,14 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import ru.dev.prizrakk.cookiesbot.manager.LoggerManager;
-import ru.dev.prizrakk.cookiesbot.util.Config;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Api extends ListenerAdapter {
+import static ru.dev.prizrakk.cookiesbot.util.Utils.getLogger;
 
-    Config config = new Config();
+public class Api extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -59,38 +57,22 @@ public class Api extends ListenerAdapter {
                             event.getChannel().sendMessageEmbeds(embed.build()).queue();
 
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            getLogger().error("", e);
                         }
                     } else {
                         EmbedBuilder embed = new EmbedBuilder();
                         embed.setTitle("Error 403: FORBIDDEN");
                         embed.setDescription("Прошу прощения у вас нет прав на выполнение этой команды");
-                        Config config = new Config();
-                        //embed.setFooter(config.years_author);
                         event.getChannel().sendMessageEmbeds(embed.build()).queue();
 
                     }
                     break;
                 case "services":
-                    if (event.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) {
                     EmbedBuilder embed = new EmbedBuilder();
                     embed.setTitle("Информация о сайтах!");
-                    embed.addField("Основной сайт", checkUri("https://cookiesland.net"), true);
-                    embed.addField("Форум", checkUri("https://forum.cookiesland.net"), true);
-                    embed.addField("Админ панель", checkUri("https://panel.dev-prizrakk.ru"), true);
-                    embed.addField("Example.com", checkUri("https://example.com"), true);
-                    //embed.setFooter(config.years_author);
+                    embed.addField("Документация", checkUri("https://cookiesbot.dev-prizrakk.ru"), true);
+                    embed.addField("Дискорд", checkUri("https://discord.com/"), true);
                     event.getChannel().sendMessageEmbeds(embed.build()).queue();
-                    break;
-                    } else {
-                        EmbedBuilder embed = new EmbedBuilder();
-                        embed.setTitle("Error 403: FORBIDDEN");
-                        embed.setDescription("Прошу прощения у вас нет прав на выполнение этой команды");
-                        Config config = new Config();
-                        //embed.setFooter(config.years_author);
-                        event.getChannel().sendMessageEmbeds(embed.build()).queue();
-
-                    }
 
             }
         }
@@ -108,8 +90,7 @@ public class Api extends ListenerAdapter {
 
             check = statusCode == 200;
         } catch (IOException e) {
-            LoggerManager log = new LoggerManager();
-            log.error("Произошла ошибка при выполнение действия checkUri \n StarkTrace: \n " + e.getMessage());
+            getLogger().error("", e);
             check = false;
         }
         if(check) {

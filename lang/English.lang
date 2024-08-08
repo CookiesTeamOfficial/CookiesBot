@@ -5,6 +5,7 @@ language.version=0.1
 welcome.message=Welcome to the server!
 goodbye.message=Goodbye!
 console.not-work.message=The console is not available
+command.doNotSendPrivateMessagesToTheBot=This command can only be used on the server.
 
 command.prefix.dogs.message=Here is your dog :)
 command.prefix.dogs.button.message=Link to dog
@@ -216,3 +217,6 @@ command.interact.settingsMenu.embed.title.message=Select an available language
 command.interact.settingsMenu.embed.description.message=If you have not found the language you need but you know this language or want to help develop the bot then go to [GitHub bot](https://github.com/CookiessTeam/CookiesBot ) you can send a PR or send it to [Discord server](https://discord.gg/e7AJWyXnKp)
 command.interact.settingsMenu.embed.footer.message=Command invoked: %timestamp%
 command.interact.settingsMenu.embed.footer.message=You have selected: %selectLanguage%
+
+event.level.up.embed.title=Level Up!
+event.level.up.embed.description=Congratulations, you have achieved %level% level on server %serverName%!

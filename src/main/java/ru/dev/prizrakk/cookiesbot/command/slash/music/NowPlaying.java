@@ -1,6 +1,7 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import org.apache.commons.codec.language.bm.Lang;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
@@ -52,6 +53,10 @@ public class NowPlaying extends Utils implements ICommand {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
+        if (event.getChannelType() != ChannelType.TEXT) {
+            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            return;
+        }
 
         Member member = event.getMember();
         GuildVoiceState memberVoiceState = member.getVoiceState();

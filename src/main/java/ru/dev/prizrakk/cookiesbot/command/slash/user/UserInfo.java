@@ -1,14 +1,14 @@
-package ru.dev.prizrakk.cookiesbot.command.slash.server;
+package ru.dev.prizrakk.cookiesbot.command.slash.user;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
-import ru.dev.prizrakk.cookiesbot.util.Config;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
@@ -45,9 +45,12 @@ public class UserInfo extends Utils implements ICommand {
         return CommandStatus.OK;
     }
 
-    Config config = new Config();
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
+        if (event.getChannelType() != ChannelType.TEXT) {
+            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            return;
+        }
         User user = null;
         Member member = null;
         String status = null;
@@ -84,7 +87,6 @@ public class UserInfo extends Utils implements ICommand {
         embed.addField(getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.title.rep.message"), getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.description.rep.message"), true);
         embed.addField(getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.title.level.message"), getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.description.level.message").replace("%level%",getUserLevel(event.getUser(), event.getGuild()).getLevel() + "") + "", true);
         embed.addField(getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.title.experience.message"), getLangMessage(event.getGuild(), "command.slash.userInfo.embed.field.description.experience.message").replace("%experience%", getUserLevel(event.getUser(), event.getGuild()).getExp() + "") + "", true);
-        //embed.setFooter(config.years_author);
         event.replyEmbeds(embed.build()).queue();
     }
 

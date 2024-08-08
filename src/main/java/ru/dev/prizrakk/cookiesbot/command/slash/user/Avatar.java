@@ -1,4 +1,4 @@
-package ru.dev.prizrakk.cookiesbot.command.slash.server;
+package ru.dev.prizrakk.cookiesbot.command.slash.user;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
-import ru.dev.prizrakk.cookiesbot.util.Config;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.sql.SQLException;
@@ -42,7 +41,6 @@ public class Avatar extends Utils implements ICommand {
         return CommandStatus.OK;
     }
 
-    Config config = new Config();
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         User user;

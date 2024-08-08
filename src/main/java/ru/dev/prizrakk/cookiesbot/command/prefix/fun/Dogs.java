@@ -17,6 +17,8 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import static ru.dev.prizrakk.cookiesbot.util.Utils.getLogger;
+
 public class Dogs extends ListenerAdapter {
 
     private DatabaseUtils databaseUtils;
@@ -30,7 +32,8 @@ public class Dogs extends ListenerAdapter {
         try {
             guildVariable = databaseUtils.getGuildFromDatabase(event.getGuild());
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            getLogger().error("", e);
+            return;
         }
         String[] message = event.getMessage().getContentRaw().split(" ", 2);
 

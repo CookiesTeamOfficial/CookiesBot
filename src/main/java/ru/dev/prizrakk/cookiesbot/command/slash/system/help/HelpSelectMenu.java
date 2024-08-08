@@ -2,6 +2,7 @@ package ru.dev.prizrakk.cookiesbot.command.slash.system.help;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
@@ -78,6 +79,10 @@ public class HelpSelectMenu extends ListenerAdapter {
                     ).setEphemeral(true).queue();
                 }
                 case "settings" -> {
+                    if (event.getChannelType() != ChannelType.TEXT) {
+                        event.reply(Utils.getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+                        return;
+                    }
                     if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
                         event.reply(Utils.getLangMessage(event.getGuild(),"command.interact.settings.noPerm.message")).queue();
                     } else {

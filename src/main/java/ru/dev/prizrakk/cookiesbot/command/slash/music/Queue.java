@@ -1,5 +1,6 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.music;
 
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
@@ -12,7 +13,6 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import ru.dev.prizrakk.cookiesbot.util.Config;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.util.ArrayList;
@@ -45,9 +45,12 @@ public class Queue extends Utils implements ICommand {
         return CommandStatus.ERROR;
     }
 
-    Config config = new Config();
     @Override
     public void execute(SlashCommandInteractionEvent event) {
+        if (event.getChannelType() != ChannelType.TEXT) {
+            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            return;
+        }
         Member member = event.getMember();
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
@@ -80,7 +83,6 @@ public class Queue extends Utils implements ICommand {
             AudioTrackInfo info = queue.get(i).getInfo();
             embedBuilder.addField(i+1 + ":", info.title, false);
         }
-        //embedBuilder.setFooter(config.years_author);
         event.replyEmbeds(embedBuilder.build()).queue();
     }
 }

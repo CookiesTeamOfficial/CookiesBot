@@ -16,7 +16,7 @@ public class Database extends Utils {
             return connection;
         }
         getLogger().debug("===================");
-        getLogger().debug("Загрузка Базы данных");
+        getLogger().debug("Loading the Database");
         getLogger().debug("===================");
         ConfigManager config = new ConfigManager();
         //String url = config.getProperty("jdbc");
@@ -27,14 +27,14 @@ public class Database extends Utils {
 
 
         connection = DriverManager.getConnection(url);
-        getLogger().debug("Подключение успешно произведено!");
+        getLogger().debug("Connection successful!");
         return connection;
     }
 
     public void initializeDatabase() throws SQLException{
         Statement statement = getConnection().createStatement();
         // SQL Запрос
-        getLogger().debug("Проверка таблицы user_info");
+        getLogger().debug("Checking the user_info table");
         String user_info = "CREATE TABLE IF NOT EXISTS `user_info` (\n" +
                 "\t`id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "\t`UUID` INT,\n" +
@@ -48,7 +48,7 @@ public class Database extends Utils {
                 "\t`ban` INT\n" +
                 ");";
         statement.execute(user_info);
-        getLogger().debug("Проверка таблицы guild_settings");
+        getLogger().debug("Checking the guild_settings table");
         String settings = "CREATE TABLE IF NOT EXISTS `guild_settings` (\n" +
                 "\t`id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "\t`UUID` INT,\n" +
@@ -62,7 +62,7 @@ public class Database extends Utils {
                 "\t`ban` INT\n" +
                 ");";
         statement.execute(settings);
-        getLogger().debug("Проверка таблицы user_rank");
+        getLogger().debug("Checking the user_rank table");
         String user_rank = "CREATE TABLE IF NOT EXISTS `user_rank` (\n" +
                 "\t`user_id` INTEGER,\n" +
                 "\t`guild_id` INTEGER,\n" +
@@ -72,7 +72,7 @@ public class Database extends Utils {
                 "\tPRIMARY KEY (`user_id`, `guild_id`)\n" +
                 ");";
         statement.execute(user_rank);
-        getLogger().debug("Проверка таблицы mutes");
+        getLogger().debug("Check mutes table");
         String mutes = "CREATE TABLE IF NOT EXISTS mutes (\n" +
                 "\t`id` INTEGER PRIMARY KEY,\n" +
                 "\t`userId` BIGINT,\n" +
@@ -81,7 +81,7 @@ public class Database extends Utils {
         statement.execute(mutes);
 
         statement.close();
-        getLogger().debug("Проверка/Создание базы данных прошло успешно!");
+        getLogger().debug("Verification/Creation of database was successful!");
     }
     public GuildVariable findGuild(String UUID) throws SQLException {
         PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM guild_settings WHERE UUID = ?");

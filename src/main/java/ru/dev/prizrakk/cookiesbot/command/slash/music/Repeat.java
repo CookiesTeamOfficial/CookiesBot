@@ -1,5 +1,6 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.music;
 
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
@@ -41,6 +42,10 @@ public class Repeat extends Utils implements ICommand {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
+        if (event.getChannelType() != ChannelType.TEXT) {
+            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            return;
+        }
         Member member = event.getMember();
         GuildVoiceState memberVoiceState = member.getVoiceState();
 

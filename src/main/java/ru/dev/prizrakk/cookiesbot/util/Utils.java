@@ -30,7 +30,8 @@ public class Utils {
             guildVariable = databaseUtils.getGuildFromDatabase(guild);
             return guildVariable;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            getLogger().error("", e);
+            return null;
         }
     }
     public static GuildVariable getGuildOnPrefix(MessageReceivedEvent event) {
@@ -39,7 +40,8 @@ public class Utils {
             guildVariable = databaseUtils.getGuildFromDatabase(event.getGuild());
             return guildVariable;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            getLogger().error("", e);
+            return null;
         }
     }
     public static ExpVariable getUserLevel(User user, Guild guild) {
@@ -48,7 +50,8 @@ public class Utils {
             expVariable = databaseUtils.getPlayerStatsFromDatabase(user.getId(), guild.getId());
             return expVariable;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            getLogger().error("", e);
+            return null;
         }
     }
     public static String getLangMessage(Guild guild, String path) {

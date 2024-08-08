@@ -89,6 +89,7 @@ public class Calc extends Utils implements ICommand  {
             embed.setFooter(getLangMessage(event.getGuild(), "command.slash.calc.footer.message"));
             event.replyEmbeds(embed.build()).queue();
         } catch (ScriptException e) {
+            getLogger().error("", e);
             event.reply(getLangMessage(event.getGuild(), "command.slash.calc.error.message")).queue();
         }
     }

@@ -2,14 +2,15 @@
 
 package ru.dev.prizrakk.cookiesbot.manager;
 
+import ru.dev.prizrakk.cookiesbot.util.Utils;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.File;
 import java.util.Properties;
 
-public class ConfigManager
-{
+public class ConfigManager extends Utils {
     private Properties properties;
     private File configFile;
     
@@ -21,7 +22,7 @@ public class ConfigManager
                 this.properties.load(inputStream);
             }
             catch (IOException e) {
-                e.printStackTrace();
+                getLogger().error("", e);
             }
         }
     }
@@ -39,7 +40,7 @@ public class ConfigManager
             this.properties.store(outputStream, null);
         }
         catch (IOException e) {
-            e.printStackTrace();
+            getLogger().error("", e);
         }
     }
 }

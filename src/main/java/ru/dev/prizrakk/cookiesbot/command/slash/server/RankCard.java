@@ -1,6 +1,7 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.server;
 
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -56,6 +57,10 @@ public class RankCard extends Utils implements ICommand {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
+        if (event.getChannelType() != ChannelType.TEXT) {
+            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            return;
+        }
         User user = (event.getOption("user") != null) ? event.getOption("user").getAsUser() : event.getUser();
 
 
@@ -70,7 +75,7 @@ public class RankCard extends Utils implements ICommand {
             byte[] profileImage = generateProfileImage(event, avatarUrl, effectiveName, username, level, experience, maxExperience);
             event.replyFiles(FileUpload.fromData(profileImage, "profile_image.png")).queue();
         } catch (IOException e) {
-            e.printStackTrace();
+            getLogger().error("", e);
             event.reply(getLangMessage(event.getGuild(), "command.slash.rankCard.errorDrawImage.message")).setEphemeral(true).queue();
         }
     }
@@ -146,7 +151,10 @@ public class RankCard extends Utils implements ICommand {
 
         try (InputStream is = uc.getInputStream()) {
             return ImageIO.read(is);
+        } catch (IOException e) {
+            getLogger().error("", e);
         }
+        return null;
     }
 
     private static BufferedImage getRoundedImage(BufferedImage image, int diameter) {

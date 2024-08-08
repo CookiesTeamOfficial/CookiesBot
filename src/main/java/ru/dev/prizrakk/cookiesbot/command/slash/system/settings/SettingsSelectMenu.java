@@ -1,6 +1,7 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.system.settings;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -30,6 +31,10 @@ public class SettingsSelectMenu extends ListenerAdapter {
     GuildVariable guildVariable;
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
+        if (event.getChannelType() != ChannelType.TEXT) {
+            event.reply(Utils.getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            return;
+        }
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss ");
         String timestamp = dateFormat.format(new Date());
         if (event.getComponentId().equals("settingsmenu")) {
@@ -67,7 +72,7 @@ public class SettingsSelectMenu extends ListenerAdapter {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            event.reply(Utils.getLangMessage(event.getGuild(), "command.interact.settingsMenu.embed.footer.message").replace("%selectLanguage%", event.getValues().get(0))).setEphemeral(true).queue();
+            event.reply(Utils.getLangMessage(event.getGuild(), "command.interact.settingsMenu.embed.footer.message").replace("%selectLanguage%", guildVariable.getLang())).setEphemeral(true).queue();
         }
     }
 }

@@ -5,24 +5,25 @@ language.version=0.1
 welcome.message=Добро пожаловать на сервер!
 goodbye.message=До свидания!
 console.not-work.message=Консоль недоступна
+command.doNotSendPrivateMessagesToTheBot=Эта команда может быть использована только на сервере.
 
 command.prefix.dogs.message=Вот ваша собака :)
 command.prefix.dogs.button.message=Ссылка на собаку
 
 command.prefix.kawaii.hug.none.message=Обнял себя!
-command.prefix.kawaii.hug.упомянутый.message=Обнял %user%!
+command.prefix.kawaii.hug.mentioned.message=Обнял %user%!
 
 command.prefix.kawaii.kiss.none.message=Поцеловал себя (Какого черта????)
-command.prefix.kawaii.kiss.упомянутый.message=Поцеловал %user%!
+command.prefix.kawaii.kiss.mentioned.message=Поцеловал %user%!
 
 command.prefix.kawaii.kill.none.message=Убил себя!
-command.prefix.kawaii.kill.упомянутый.message=Убит %user%!
+command.prefix.kawaii.kill.mentioned.message=Убит %user%!
 
 command.prefix.kawaii.dead.none.message=Умер от депрессии!
-command.prefix.kawaii.dead.упомянутый.message=Умер из-за %user%!
+command.prefix.kawaii.dead.mentioned.message=Умер из-за %user%!
 
 command.prefix.kawaii.cry.none.message=Плачу!
-command.prefix.kawaii.cry.упомянутый.message=Плачу из-за %user%!
+command.prefix.kawaii.cry.mentioned.message=Плачу из-за %user%!
 command.prefix.kawaii.errorMentioned.message=Пожалуйста, укажите правильного пользователя!
 
 command.slash.calc.errorEngine.message=Ошибка: механизм JavaScript недоступен.
@@ -114,17 +115,17 @@ command.slash.serverInfo.embed.description.message=<:DateTime:120937887529396224
                                                    %boostTier%
                                                    <:3Months:1209386800813051924> Количество повышений: **%boostCount%**
                                                    <:6Months:1209386799231926302> Роль повышения: **%boostRole%**
-                                                   <:Владелец:1209394164316373043> Создатель: %guildOwner%
+                                                   <:Owner:1209394164316373043> Создатель: %guildOwner%
                                                    :flag_white: Язык: **%language%**
 command.slash.serverInfo.embed.field.title.members.message=Участники
 command.slash.serverInfo.embed.field.description.members.message=:busts_in_silhouette: Итого: **%allUsers%**
                                                                  :bust_in_silhouette: Люди: **%users%**
                                                                  :robot: Боты: **%bots%**
 command.slash.serverInfo.field.title.status.message=По статусу
-command.slash.serverInfo.field.description.status.message=<:Онлайн:1209207268281942047> В сети: **%onlineUsers%**
+command.slash.serverInfo.field.description.status.message=<:Online:1209207268281942047> В сети: **%onlineUsers%**
                                                           <:Idle:1209207266620866620> Неактивно: **%idleUsers%**
                                                           <:Dnd:1209207263802171402> Не беспокоить: **%dndUsers%**
-                                                          <:Не в сети:1209207265165316187> Не в сети: **%offlineUsers%**
+                                                          <:Offline:1209207265165316187> Не в сети: **%offlineUsers%**
 command.slash.serverInfo.field.title.channel.message=Каналы
 command.slash.serverInfo.field.description.channel.message=<:CategoryMobile:1209375825980428328> Категории: **%categoryChannels%**
                                                            <:Text:1209198697297092618> Текст: **%textChannels%**
@@ -133,11 +134,11 @@ command.slash.serverInfo.field.description.channel.message=<:CategoryMobile:1209
                                                            <:Forum:1209198698702049311> Форумы: **%forumChannels%**
                                                            <:Stage:1209198694331846676> Этап: **%stageChannels%**
 
-command.slash.userInfo.unknown.message=<:Не в сети:1209207265165316187> Не известно
+command.slash.userInfo.unknown.message=<:Offline:1209207265165316187> Не известно
 command.slash.userInfo.idle.message=<:Idle:1209207266620866620> Не активирован
-command.slash.userInfo.online.message=<:Онлайн:1209207268281942047> Онлайн
-command.slash.userInfo.offline.message=<:Не в сети:1209207265165316187> Оффлайн
-command.slash.userInfo.invisible.message=<:Не в сети:1209207265165316187> Неведомый
+command.slash.userInfo.online.message=<:Online:1209207268281942047> Онлайн
+command.slash.userInfo.offline.message=<:Offline:1209207265165316187> Оффлайн
+command.slash.userInfo.invisible.message=<:Offline:1209207265165316187> Неведомый
 command.slash.userInfo.dnd.message=<:Dnd:1209207263802171402> Занят
 command.slash.userInfo.embed.title.message=Информация о пользователе
 command.slash.userInfo.embed.description.message=Вы можете добавить свой статус кастомный! (скоро...)
@@ -217,10 +218,5 @@ command.interact.settingsMenu.embed.description.message=Если вы не об�
 command.interact.settingsMenu.embed.footer.message=Команда вызвана: %timestamp%
 command.interact.settingsMenu.embed.footer.message=Вы выбрали: %selectLanguage%
 
-
-
-
-
-
-
-
+event.level.up.embed.title=Повышение уровня!
+event.level.up.embed.description=Поздравляю вы получили %level% уровень на сервере %serverName%!

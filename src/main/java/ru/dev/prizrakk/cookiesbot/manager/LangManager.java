@@ -1,16 +1,19 @@
 package ru.dev.prizrakk.cookiesbot.manager;
 
+import ru.dev.prizrakk.cookiesbot.util.Utils;
+
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public class LangManager {
+public class LangManager extends Utils {
     private static final String LANG_DIRECTORY = "lang/";
     private static final String DEFAULT_LANG = "Russia"; // Язык по умолчанию
 
@@ -22,14 +25,14 @@ public class LangManager {
     public static void loadLanguages() {
         File langDir = new File(LANG_DIRECTORY);
         if (!langDir.exists()) {
-            System.out.println("Папка с языками не найдена, создаю новую: " + LANG_DIRECTORY);
+            getLogger().warn("The folder with languages was not found, I am creating a new one: " + LANG_DIRECTORY);
             langDir.mkdir();
-            createDefaultLangFiles();
+            downloadLanguage();
         }
 
         File[] langFiles = langDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".lang"));
         if (langFiles == null) {
-            System.err.println("Нет языковых файлов в директории: " + LANG_DIRECTORY);
+            getLogger().warn("There are no language files in the directory: " + LANG_DIRECTORY);
             return;
         }
 
@@ -60,9 +63,9 @@ public class LangManager {
                     properties.put(key, valueBuilder.toString().trim());
                 }
                 languages.put(langName, properties);
-                System.out.println("Языковые данные загружены для языка: " + langName);
+                getLogger().info("Language data loaded for language: " + langName);
             } catch (IOException e) {
-                System.err.println("Ошибка загрузки языковых данных для языка " + langName + ": " + e.getMessage());
+                getLogger().error("Error loading language data for language " + langName + ": ", e);
             }
         }
     }
@@ -76,18 +79,44 @@ public class LangManager {
         return languages.keySet();
     }
 
-    private static void createDefaultLangFiles() {
-        createLangFile("Russia.lang", new String[]{
-                "welcome.message=Добро пожаловать на сервер!",
-                "goodbye.message=До свидания!",
-                "multiline.message=Это многострочное сообщение на русском языке.\nСледующая строка этого сообщения также должна быть учтена."
-        });
+    private static void downloadLanguage() {
+        // URL, откуда будут загружаться файлы
+        String baseUrl = "https://mirror.dev-prizrakk.ru/cookiesteam/cookiesbot/lang/";
 
-        createLangFile("English.lang", new String[]{
-                "welcome.message=Welcome to the server!",
-                "goodbye.message=Goodbye!",
-                "multiline.message=This is a multi-line message in English.\nThe next line of this message should also be considered."
-        });
+        // Папка, куда будут сохранены файлы
+        Path langDirectory = Paths.get("lang");
+
+        // Создаем папку, если она не существует
+        if (!Files.exists(langDirectory)) {
+            try {
+                Files.createDirectory(langDirectory);
+            } catch (IOException e) {
+                getLogger().error("Error when creating lang folder:", e);
+                return;
+            }
+        }
+
+        // Список имен файлов для загрузки
+        String[] langFiles = new String[]{
+                "Russia.lang",
+                "English.lang"
+                // Добавь здесь другие файлы, если нужно
+        };
+
+        for (String langFile : langFiles) {
+            try (BufferedInputStream in = new BufferedInputStream(new URL(baseUrl + langFile).openStream());
+                 FileOutputStream fileOutputStream = new FileOutputStream(langDirectory.resolve(langFile).toFile())) {
+
+                byte[] dataBuffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                    fileOutputStream.write(dataBuffer, 0, bytesRead);
+                }
+                getLogger().info(langFile + " successfully downloaded and saved in the lang folder.");
+            } catch (IOException e) {
+                getLogger().error("Error uploading file " + langFile, e);
+            }
+        }
     }
 
     private static void createLangFile(String fileName, String[] content) {
@@ -99,11 +128,11 @@ public class LangManager {
                         writer.write(line);
                         writer.newLine();
                     }
-                    System.out.println("Файл создан: " + fileName);
+                    getLogger().info("File created: " + fileName);
                 }
             }
         } catch (IOException e) {
-            System.err.println("Ошибка создания файла " + fileName + ": " + e.getMessage());
+            getLogger().error("Error creating file " + fileName + ": ", e);
         }
     }
 
@@ -115,7 +144,7 @@ public class LangManager {
                 return value.replace("\\n", "\n");
             }
         } else {
-            System.err.println("Языковой файл не найден для языка: " + lang);
+            getLogger().error("Language file not found for language: " + lang);
         }
         return key; // Вернуть ключ, если сообщение не найдено
     }

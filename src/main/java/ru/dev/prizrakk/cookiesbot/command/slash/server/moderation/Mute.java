@@ -3,13 +3,13 @@ package ru.dev.prizrakk.cookiesbot.command.slash.server.moderation;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
-import ru.dev.prizrakk.cookiesbot.util.Config;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.sql.SQLException;
@@ -49,6 +49,10 @@ public class Mute extends Utils implements ICommand {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
+        if (event.getChannelType() != ChannelType.TEXT) {
+            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            return;
+        }
         Member member = event.getOption("user").getAsMember();
         if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) || !event.getMember().hasPermission(Permission.BAN_MEMBERS) || !event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
             event.reply(getLangMessage(event.getGuild(), "command.slash.mute.noPermission.message")).queue();
@@ -124,7 +128,7 @@ public class Mute extends Utils implements ICommand {
                 }
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            System.err.println("Error parsing time: " + e.getMessage());
+            getLogger().error("Error parsing time:", e);
             return -1;
         }
 
@@ -135,7 +139,6 @@ public class Mute extends Utils implements ICommand {
         Member member = event.getOption("user").getAsMember();
         if (member == null) return;
 
-        Config config = new Config();
         String logChannelId = "1209231369243332738";
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("Пользователь замучен!");
@@ -143,8 +146,6 @@ public class Mute extends Utils implements ICommand {
         embed.addField("Время наказания", event.getOption("duration").getAsString(), true);
         embed.addField("Причина", event.getOption("reason").getAsString(), true);
         embed.addField("Модератор", event.getMember().getAsMention(), true);
-        //embed.setFooter(config.years_author);
-
         event.getGuild().getTextChannelById(logChannelId).sendMessageEmbeds(embed.build()).queue();
     }
 }

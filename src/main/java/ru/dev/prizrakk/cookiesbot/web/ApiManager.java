@@ -17,7 +17,7 @@ public class ApiManager extends Utils {
 
     public void registerApis() {
         getLogger().debug("===================");
-        getLogger().debug("Загрузка web api");
+        getLogger().debug("Loading web api");
         getLogger().debug("===================");
         if (!apisRegistered) {
             for (ApiInterface api : this.apis) {
