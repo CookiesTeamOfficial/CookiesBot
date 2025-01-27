@@ -5,6 +5,9 @@ language.version=0.1
 welcome.message=Добро пожаловать на сервер!
 goodbye.message=До свидания!
 console.not-work.message=Консоль недоступна
+command.noHasPermissionUser.title=Ошибка доступа
+command.noHasPermissionUser.description=При попытке использовать команду произошла ошибка: Отказ в доступе у пользователя отсутствуют права: %noHasPermission%
+command.noHasPermissionUser.footer=Ошибка была вызвана в %time%
 command.doNotSendPrivateMessagesToTheBot=Эта команда может быть использована только на сервере.
 
 command.prefix.dogs.message=Вот ваша собака :)
