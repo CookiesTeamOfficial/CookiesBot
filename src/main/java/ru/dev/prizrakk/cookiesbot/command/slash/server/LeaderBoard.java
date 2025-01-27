@@ -1,9 +1,11 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.server;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
@@ -23,11 +25,9 @@ import java.util.List;
 public class LeaderBoard extends Utils implements ICommand {
     private static final int USERS_PER_PAGE = 10;
 
-    private Database database;
     private DatabaseUtils databaseUtils;
 
     public LeaderBoard(Database database) {
-        this.database = database;
         this.databaseUtils = new DatabaseUtils(database);
     }
 
@@ -54,6 +54,11 @@ public class LeaderBoard extends Utils implements ICommand {
     @Override
     public CommandStatus getStatus() {
         return CommandStatus.OK;
+    }
+
+    @Override
+    public List<Permission> getRequiredPermissions() {
+        return List.of(Permission.MESSAGE_SEND);
     }
 
     @Override
@@ -101,6 +106,7 @@ public class LeaderBoard extends Utils implements ICommand {
         return memberIds;
     }
 
+    //TODO: fix broken button
     private void displayLeaderboardPage(SlashCommandInteractionEvent event, List<ExpVariable> allStats, int pageIndex, int userRank) {
         int startIndex = pageIndex * USERS_PER_PAGE;
         int endIndex = Math.min(startIndex + USERS_PER_PAGE, allStats.size());
@@ -113,10 +119,12 @@ public class LeaderBoard extends Utils implements ICommand {
         for (int i = startIndex; i < endIndex; i++) {
             ExpVariable stats = allStats.get(i);
             Member member = event.getGuild().getMemberById(stats.getUserID());
-            embed.addField((i + 1) + ". " + member.getEffectiveName(),
-                    getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.field.message")
-                            .replace("%userLevel%", stats.getLevel() + "")
-                            .replace("%userExp%", stats.getExp() + ""),false);
+            if (!member.getUser().isBot()) {
+                embed.addField((i + 1) + ". " + member.getEffectiveName(),
+                        getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.field.message")
+                                .replace("%userLevel%", stats.getLevel() + "")
+                                .replace("%userExp%", stats.getExp() + ""),false);
+            }
         }
 
         List<Button> buttons = new ArrayList<>();
@@ -130,4 +138,6 @@ public class LeaderBoard extends Utils implements ICommand {
 
         event.replyEmbeds(embed.build()).addActionRow(buttons).queue();
     }
+
+
 }

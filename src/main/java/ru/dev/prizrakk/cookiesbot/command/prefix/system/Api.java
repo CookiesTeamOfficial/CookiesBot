@@ -23,9 +23,9 @@ public class Api extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         String[] message = event.getMessage().getContentRaw().split(" ", 2);
 
-// Проверяем, что сообщение начинается с вашего префикса
-        if (message[0].startsWith("!")) { // Замените "!" на ваш префикс
-            String command = message[0].substring(1).toLowerCase(); // Убираем префикс и приводим к нижнему регистру
+
+        if (message[0].startsWith("!")) {
+            String command = message[0].substring(1).toLowerCase();
             String[] args = message.length > 1 ? message[1].split(" ") : new String[0];
             switch (command) {
                 case "kawai":
@@ -78,8 +78,8 @@ public class Api extends ListenerAdapter {
         }
     }
     String checkUri(String url) {
-        boolean check = false;
-        String site = null;
+        boolean check;
+        String site;
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet request = new HttpGet(url);

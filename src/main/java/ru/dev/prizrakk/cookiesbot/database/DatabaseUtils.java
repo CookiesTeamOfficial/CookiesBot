@@ -25,6 +25,4 @@ public class DatabaseUtils {
         }
         return guildVariable;
     }
-
-
 }

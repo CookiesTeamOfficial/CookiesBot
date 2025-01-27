@@ -24,11 +24,9 @@ import java.util.function.BiConsumer;
 import static ru.dev.prizrakk.cookiesbot.util.Utils.getLogger;
 
 public class Kawaii extends ListenerAdapter {
-    private final Database database;
     private final DatabaseUtils databaseUtils;
 
     public Kawaii(Database database) {
-        this.database = database;
         this.databaseUtils = new DatabaseUtils(database);
     }
 

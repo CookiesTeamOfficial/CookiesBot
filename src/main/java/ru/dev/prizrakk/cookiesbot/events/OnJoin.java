@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 import static ru.dev.prizrakk.cookiesbot.util.Utils.getLogger;
 
+@Deprecated
 public class OnJoin extends ListenerAdapter {
     Database database;
     DatabaseUtils databaseUtils = new DatabaseUtils(database);

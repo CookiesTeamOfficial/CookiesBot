@@ -35,9 +35,10 @@ public class ApiManager extends Utils {
                         });
                         break;
                     default:
-                        throw new UnsupportedOperationException("Unsupported HTTP method: " + api.type());
+                        UnsupportedOperationException e = new UnsupportedOperationException();
+                        getLogger().error("Unsupported HTTP method: " + api.type(), e);
                 }
-                getLogger().debug("API " + api.getName() + " зарегистрирована по пути: " + api.getPath());
+                getLogger().debug("API " + api.getName() + " registered on the way: " + api.getPath());
             }
             notFound((req, res) -> {
                 res.type("application/json");
