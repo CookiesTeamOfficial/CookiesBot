@@ -1,6 +1,7 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.fun;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -48,6 +49,11 @@ public class Calc extends Utils implements ICommand  {
     @Override
     public CommandStatus getStatus() {
         return CommandStatus.OK;
+    }
+
+    @Override
+    public List<Permission> getRequiredPermissions() {
+        return List.of(Permission.MESSAGE_SEND);
     }
 
     @Override

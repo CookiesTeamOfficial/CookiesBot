@@ -1,6 +1,7 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.system.help;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -39,6 +40,11 @@ public class Help extends Utils implements ICommand {
     @Override
     public CommandStatus getStatus() {
         return CommandStatus.OK;
+    }
+
+    @Override
+    public List<Permission> getRequiredPermissions() {
+        return List.of(Permission.MESSAGE_SEND);
     }
 
     @Override

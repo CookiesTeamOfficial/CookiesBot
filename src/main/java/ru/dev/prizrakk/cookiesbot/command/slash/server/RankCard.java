@@ -1,5 +1,6 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.server;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -53,6 +54,11 @@ public class RankCard extends Utils implements ICommand {
     @Override
     public CommandStatus getStatus() {
         return CommandStatus.OK;
+    }
+
+    @Override
+    public List<Permission> getRequiredPermissions() {
+        return List.of(Permission.MESSAGE_SEND);
     }
 
     @Override

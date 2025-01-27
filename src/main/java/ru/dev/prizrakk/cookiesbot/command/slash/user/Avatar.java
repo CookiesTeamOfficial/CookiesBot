@@ -1,6 +1,7 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.user;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -39,6 +40,11 @@ public class Avatar extends Utils implements ICommand {
     @Override
     public CommandStatus getStatus() {
         return CommandStatus.OK;
+    }
+
+    @Override
+    public List<Permission> getRequiredPermissions() {
+        return List.of(Permission.MESSAGE_SEND);
     }
 
     @Override

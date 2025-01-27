@@ -1,6 +1,7 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.user;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
@@ -46,13 +47,18 @@ public class UserInfo extends Utils implements ICommand {
     }
 
     @Override
+    public List<Permission> getRequiredPermissions() {
+        return List.of(Permission.MESSAGE_SEND);
+    }
+
+    @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         if (event.getChannelType() != ChannelType.TEXT) {
             event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
             return;
         }
-        User user = null;
-        Member member = null;
+        User user;
+        Member member;
         String status = null;
         if (event.getOption("user") != null) {
             user = event.getOption("user").getAsUser();

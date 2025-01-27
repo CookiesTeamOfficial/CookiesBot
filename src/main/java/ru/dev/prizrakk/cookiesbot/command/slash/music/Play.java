@@ -1,5 +1,6 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.music;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
@@ -43,6 +44,11 @@ public class Play extends Utils implements ICommand {
     @Override
     public CommandStatus getStatus() {
         return CommandStatus.ERROR;
+    }
+
+    @Override
+    public List<Permission> getRequiredPermissions() {
+        return List.of(Permission.MESSAGE_SEND);
     }
 
     @Override

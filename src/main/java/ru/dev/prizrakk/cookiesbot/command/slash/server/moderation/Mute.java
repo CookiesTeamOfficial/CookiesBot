@@ -48,16 +48,17 @@ public class Mute extends Utils implements ICommand {
     }
 
     @Override
+    public List<Permission> getRequiredPermissions() {
+        return List.of(Permission.MESSAGE_SEND, Permission.KICK_MEMBERS);
+    }
+
+    @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         if (event.getChannelType() != ChannelType.TEXT) {
             event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
             return;
         }
         Member member = event.getOption("user").getAsMember();
-        if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) || !event.getMember().hasPermission(Permission.BAN_MEMBERS) || !event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
-            event.reply(getLangMessage(event.getGuild(), "command.slash.mute.noPermission.message")).queue();
-            return;
-        }
         if (member == null) {
             event.reply(getLangMessage(event.getGuild(), "command.slash.mute.notFoundMember.message")).setEphemeral(true).queue();
             return;
@@ -133,19 +134,5 @@ public class Mute extends Utils implements ICommand {
         }
 
         return milliseconds;
-    }
-
-    public void sendAudit(SlashCommandInteractionEvent event) {
-        Member member = event.getOption("user").getAsMember();
-        if (member == null) return;
-
-        String logChannelId = "1209231369243332738";
-        EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("Пользователь замучен!");
-        embed.addField("Нарушитель", member.getAsMention(), true);
-        embed.addField("Время наказания", event.getOption("duration").getAsString(), true);
-        embed.addField("Причина", event.getOption("reason").getAsString(), true);
-        embed.addField("Модератор", event.getMember().getAsMention(), true);
-        event.getGuild().getTextChannelById(logChannelId).sendMessageEmbeds(embed.build()).queue();
     }
 }
