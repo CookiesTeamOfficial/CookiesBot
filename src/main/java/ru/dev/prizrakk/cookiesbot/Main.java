@@ -101,7 +101,7 @@ public class Main extends Utils {
         /* =============== */
         /*    Web Loader   */
         /* =============== */
-        WebMain.initialize();
+        WebMain.initialize(jda);
     }
     private static String getLatestReleaseVersion(String owner, String repo) throws IOException {
         String url = "https://api.github.com/repos/" + owner + "/" + repo + "/releases/latest";
