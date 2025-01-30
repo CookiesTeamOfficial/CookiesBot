@@ -19,9 +19,11 @@ import ru.dev.prizrakk.cookiesbot.command.slash.fun.Calc;
 import ru.dev.prizrakk.cookiesbot.command.slash.music.*;
 import ru.dev.prizrakk.cookiesbot.command.slash.server.*;
 import ru.dev.prizrakk.cookiesbot.command.slash.server.moderation.Mute;
+import ru.dev.prizrakk.cookiesbot.command.slash.server.moderation.UnMute;
 import ru.dev.prizrakk.cookiesbot.command.slash.system.Status;
 import ru.dev.prizrakk.cookiesbot.command.slash.system.help.Help;
 import ru.dev.prizrakk.cookiesbot.command.slash.system.help.HelpSelectMenu;
+import ru.dev.prizrakk.cookiesbot.command.slash.system.settings.Settings;
 import ru.dev.prizrakk.cookiesbot.command.slash.system.settings.SettingsSelectMenu;
 import ru.dev.prizrakk.cookiesbot.command.slash.user.Avatar;
 import ru.dev.prizrakk.cookiesbot.command.slash.user.UserInfo;
@@ -189,10 +191,12 @@ public class Main extends Utils {
         /*System command*/
         commandManager.add(new Status());
         commandManager.add(new Help());
+        commandManager.add(new Settings());
         jda.addEventListener(new HelpSelectMenu());
         jda.addEventListener(new SettingsSelectMenu(database));
         /* moderation */
         commandManager.add(new Mute());
+        commandManager.add(new UnMute());
 
         jda.addEventListener(commandManager);
 
