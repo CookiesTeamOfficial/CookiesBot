@@ -64,7 +64,7 @@ public class ServerInfo extends Utils implements ICommand {
         int idleUsers = 0;
         int dndUsers = 0;
         int offlineUsers = 0;
-        String boostTier = null;
+        String boostTier;
         String verifLevel = null;
 
         event.getGuild().loadMembers().onSuccess(members -> {
@@ -122,7 +122,7 @@ public class ServerInfo extends Utils implements ICommand {
         embed.setTitle(getLangMessage(guild, "command.slash.serverInfo.embed.title.message").replace("%guildName%", guild.getName()));
         embed.setDescription(getLangMessage(guild, "command.slash.serverInfo.embed.description.message")
                 .replace("%createTime%", formattedCreateTime)
-                .replace("%location%", guild.getLocale().getLanguageName())
+                .replace("%location%", guild.getLocale().getNativeName())
                 .replace("%verifyLevel%", verifLevel)
                 .replace("%boostTier%", boostTier)
                 .replace("%boostCount%", guild.getBoostCount() + "")

@@ -1,11 +1,20 @@
 package ru.dev.prizrakk.cookiesbot.manager;
 
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class LoggerManager {
+    private static final LoggerManager instance = new LoggerManager(); // Синглтон экземпляр
     private final ColorManager color = new ColorManager();
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
+    // Приватный конструктор для запрета создания экземпляра класса
+    public LoggerManager() {}
+
+    // Глобальный доступ к экземпляру логгера
+    public static LoggerManager getInstance() {
+        return instance;
+    }
 
     private String getTimestamp() {
         return dateFormat.format(new Date());
@@ -44,7 +53,6 @@ public class LoggerManager {
             }
         }
     }
-
     public void criticalError(String message) {
         log("!!!ALERT!!!", color.ANSI_RED, message);
     }

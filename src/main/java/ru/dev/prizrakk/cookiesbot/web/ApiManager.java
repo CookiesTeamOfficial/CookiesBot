@@ -19,6 +19,7 @@ public class ApiManager extends Utils {
         getLogger().debug("===================");
         getLogger().debug("Loading web api");
         getLogger().debug("===================");
+        getLogger().debug("Load on https://localhost:1111/");
         if (!apisRegistered) {
             for (ApiInterface api : this.apis) {
                 switch (api.type()) {

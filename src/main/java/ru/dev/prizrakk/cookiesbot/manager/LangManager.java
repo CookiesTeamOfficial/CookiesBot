@@ -1,5 +1,6 @@
 package ru.dev.prizrakk.cookiesbot.manager;
 
+import net.dv8tion.jda.api.entities.Member;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.io.*;
@@ -15,7 +16,7 @@ import java.util.Set;
 
 public class LangManager extends Utils {
     private static final String LANG_DIRECTORY = "lang/";
-    private static final String DEFAULT_LANG = "Russia"; // Язык по умолчанию
+    private static final String DEFAULT_LANG = "Russia";
 
     private static Map<String, Properties> languages = new HashMap<>();
     public static Map<String, Properties> getLanguages() {
@@ -137,6 +138,20 @@ public class LangManager extends Utils {
     }
 
     public static String getMessage(String lang, String key) {
+        Properties properties = languages.get(lang);
+        if (properties != null) {
+            String value = properties.getProperty(key);
+            if (value != null) {
+                return value.replace("\\n", "\n");
+            }
+        } else {
+            getLogger().error("Language file not found for language: " + lang);
+        }
+        return key; // Вернуть ключ, если сообщение не найдено
+    }
+    public static String getMessage(Member member, String key) {
+
+        String lang = "s";
         Properties properties = languages.get(lang);
         if (properties != null) {
             String value = properties.getProperty(key);

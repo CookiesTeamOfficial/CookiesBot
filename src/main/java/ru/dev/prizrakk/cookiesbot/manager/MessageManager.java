@@ -30,7 +30,7 @@ public class MessageManager extends ListenerAdapter {
     GuildVariable guildVariable;
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-        if (!(event.getMember()).getUser().isBot()) {
+        if (!(event.getMember().getUser().isBot())) {
             try {
                 expVariable = databaseUtils.getPlayerStatsFromDatabase(event.getMember().getId(), event.getGuild().getId());
                 guildVariable = databaseUtils.getGuildFromDatabase(event.getGuild());

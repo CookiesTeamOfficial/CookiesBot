@@ -13,7 +13,6 @@ import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.awt.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Help extends Utils implements ICommand {

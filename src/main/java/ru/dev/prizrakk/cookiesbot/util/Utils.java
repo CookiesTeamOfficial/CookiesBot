@@ -2,7 +2,6 @@ package ru.dev.prizrakk.cookiesbot.util;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import ru.dev.prizrakk.cookiesbot.database.Database;
 import ru.dev.prizrakk.cookiesbot.database.DatabaseUtils;
@@ -57,5 +56,6 @@ public class Utils {
     public static String getLangMessage(Guild guild, String path) {
         return LangManager.getMessage(getGuildOnSlash(guild).getLang(), path);
     }
+
 
 }

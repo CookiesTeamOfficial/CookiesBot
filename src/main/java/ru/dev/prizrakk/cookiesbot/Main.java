@@ -9,12 +9,9 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import org.kohsuke.github.GHRelease;
-import org.kohsuke.github.GitHub;
 import ru.dev.prizrakk.cookiesbot.command.prefix.fun.Dogs;
 import ru.dev.prizrakk.cookiesbot.command.prefix.fun.Kawaii;
 import ru.dev.prizrakk.cookiesbot.command.prefix.system.Api;
-import ru.dev.prizrakk.cookiesbot.command.prefix.system.Diagnostics;
 import ru.dev.prizrakk.cookiesbot.command.slash.fun.Calc;
 import ru.dev.prizrakk.cookiesbot.command.slash.music.*;
 import ru.dev.prizrakk.cookiesbot.command.slash.server.*;
@@ -32,8 +29,12 @@ import ru.dev.prizrakk.cookiesbot.events.OnJoin;
 import ru.dev.prizrakk.cookiesbot.events.OnLeft;
 import ru.dev.prizrakk.cookiesbot.command.CommandManager;
 import ru.dev.prizrakk.cookiesbot.manager.ConfigManager;
+import ru.dev.prizrakk.cookiesbot.manager.console.Console;
 import ru.dev.prizrakk.cookiesbot.manager.LangManager;
 import ru.dev.prizrakk.cookiesbot.manager.MessageManager;
+import ru.dev.prizrakk.cookiesbot.manager.console.ConsoleManager;
+import ru.dev.prizrakk.cookiesbot.manager.console.command.ReloadLang;
+import ru.dev.prizrakk.cookiesbot.manager.console.command.hello;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 import ru.dev.prizrakk.cookiesbot.web.WebMain;
 
@@ -48,13 +49,9 @@ import java.sql.SQLException;
 public class Main extends Utils {
     static JDA jda;
     static Database database;
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws IOException {
         Main main = new Main();
-
-        //ConsoleManager consoleManager = new ConsoleManager();
-        //consoleManager.console();
-
+        
         /* =============== */
         /*   Properties Loader   */
         /* =============== */
@@ -104,6 +101,46 @@ public class Main extends Utils {
         /*    Web Loader   */
         /* =============== */
         WebMain.initialize(jda);
+        
+        /* ================ */
+        /*  Console Loader  */
+        /* ================ */
+        Thread logThread = new Thread(() -> {
+            ConsoleManager commandManager = new ConsoleManager();
+            Console console = null;
+            try {
+                console = new Console();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            // Регистрируем команды
+            commandManager.registerCommand(new hello());
+            commandManager.registerCommand(new ReloadLang());
+
+            // Основной цикл
+            while (true) {
+                String input = console.readLine(">> ");
+                if (input.equalsIgnoreCase("exit")) {
+                    getLogger().info("Shutdown bot");
+                    System.exit(200);
+                    break;
+                } else if (input.equalsIgnoreCase("help")) {
+                    commandManager.listCommands();
+                } else {
+                    commandManager.executeCommand(input);
+                }
+            }
+
+            try {
+                console.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        logThread.setDaemon(true);
+        logThread.start();
+
     }
     private static String getLatestReleaseVersion(String owner, String repo) throws IOException {
         String url = "https://api.github.com/repos/" + owner + "/" + repo + "/releases/latest";
@@ -208,7 +245,6 @@ public class Main extends Utils {
         jda.addEventListener(new Kawaii(database));
         /* system */
         jda.addEventListener(new Api());
-        jda.addEventListener(new Diagnostics());
 
         /* ======================= */
         /* Event                   */
@@ -227,11 +263,4 @@ public class Main extends Utils {
             getLogger().error("Error Database!", ex);
         }
     }
-
-    // Метод для получения последнего релиза с GitHub
-//    private static String getLatestReleaseVersion(String owner, String repository) throws IOException {
-//        GitHub github = GitHub.connectAnonymously();
-//        GHRelease latestRelease = github.getRepository(owner + "/" + repository).getLatestRelease();
-//        return null;
-//    }
 }

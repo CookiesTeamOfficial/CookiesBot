@@ -3,7 +3,6 @@ package ru.dev.prizrakk.cookiesbot.command.slash.music;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
-import org.apache.commons.codec.language.bm.Lang;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.database.Database;
@@ -17,11 +16,9 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import ru.dev.prizrakk.cookiesbot.manager.LangManager;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 import ru.dev.prizrakk.cookiesbot.util.Values;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class NowPlaying extends Utils implements ICommand {

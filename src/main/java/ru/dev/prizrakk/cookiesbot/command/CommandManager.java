@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -23,7 +22,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import ru.dev.prizrakk.cookiesbot.database.Database;
 import ru.dev.prizrakk.cookiesbot.database.DatabaseUtils;
 import ru.dev.prizrakk.cookiesbot.database.GuildVariable;
-import ru.dev.prizrakk.cookiesbot.manager.ColorManager;
 import ru.dev.prizrakk.cookiesbot.manager.LangManager;
 
 import static ru.dev.prizrakk.cookiesbot.util.Utils.getLogger;

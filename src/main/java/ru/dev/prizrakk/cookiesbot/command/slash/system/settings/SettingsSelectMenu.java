@@ -35,6 +35,11 @@ public class SettingsSelectMenu extends ListenerAdapter {
             event.reply(Utils.getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
             return;
         }
+        try {
+            guildVariable = databaseUtils.getGuildFromDatabase(event.getGuild());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss ");
         String timestamp = dateFormat.format(new Date());
         if (event.getComponentId().equals("settingsmenu")) {
@@ -44,7 +49,7 @@ public class SettingsSelectMenu extends ListenerAdapter {
                 embed.setColor(new Color(255, 104, 0));
                 embed.setTitle(Utils.getLangMessage(event.getGuild(), "command.interact.settingsMenu.embed.title.message"));
                 embed.setDescription(Utils.getLangMessage(event.getGuild(), "command.interact.settingsMenu.embed.description.message"));
-                embed.setFooter(Utils.getLangMessage(event.getGuild(), "command.interact.settingsMenu.embed.footer.message").replace("%timestamp%", timestamp));
+                embed.setFooter(Utils.getLangMessage(event.getGuild(), "command.interact.settingsMenu.embed.footer.message").replace("%selectLanguage%", guildVariable.getLang()));
 
                 // Получение списка доступных языков
                 Map<String, Properties> languages = LangManager.getLanguages();
@@ -66,7 +71,7 @@ public class SettingsSelectMenu extends ListenerAdapter {
         }
         if (event.getComponentId().equals("language_select")) {
             try {
-                guildVariable = databaseUtils.getGuildFromDatabase(event.getGuild());
+
                 guildVariable.setLang(event.getValues().get(0));
                 database.updateGuildStats(guildVariable);
             } catch (SQLException e) {

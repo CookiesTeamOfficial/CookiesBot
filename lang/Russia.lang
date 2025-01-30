@@ -79,11 +79,15 @@ command.slash.mute.notFoundMember.message=Не удалось найти пол�
 command.slash.mute.incorrectDuration.message=Необходимо указать продолжительность.
 command.slash.mute.incorrectTime.message=Неправильное время.
 command.slash.mute.incorrectReason.message=Необходимо указать причину.
-command.slash.mute.errorMuteUser.message=Не удалось отключить звук пользователя: %errorLog%
-command.slash.mute.successfulMute.title.message=Пользователя пытают!
+command.slash.mute.errorMuteUser.message=Не удалось замьютить пользователя: %errorLog%
+command.slash.mute.successfulMute.title.message=Пользователь замьючен!
 command.slash.mute.successfulMute.field.breaker.message=Выключатель
 command.slash.mute.successfulMute.field.timePunishment.message=Время наказания
 command.slash.mute.successfulMute.field.reason.message=Причина
+
+command.slash.unmute.successfulUnMute.message=Пользователь замьючен!
+command.slash.unmute.notFoundMember.message=Пользователь не найден
+command.slash.unmute.errorUnMuteUser.message=Не удалось размьютить пользователя: %errorLog%
 
 command.slash.avatar.embed.title.message=Аватар %user%
 command.slash.avatar.embed.footer.message=Твой аватар крутой :3
@@ -113,11 +117,11 @@ command.slash.serverInfo.verificationLevel.high.message=Максимум
 command.slash.serverInfo.verificationLevel.veryHigh.message=БОЖЕСТВЕННОЕ!!!!!
 command.slash.serverInfo.embed.title.message=Информация о %guildName%
 command.slash.serverInfo.embed.description.message=<:DateTime:1209378875293962240> Дата создания: **%createTime%**
-                                                   <:location:1209386794513203241> Местоположение: **%location%**
+                                                   <:location:1209386794513203241> Локация: **%location%**
                                                    <:Security:1209378873972891648> Уровень безопасности: **%verifyLevel%**
                                                    %boostTier%
-                                                   <:3Months:1209386800813051924> Количество повышений: **%boostCount%**
-                                                   <:6Months:1209386799231926302> Роль повышения: **%boostRole%**
+                                                   <:3Months:1209386800813051924> Количество буство: **%boostCount%**
+                                                   <:6Months:1209386799231926302> Роль бустера: **%boostRole%**
                                                    <:Owner:1209394164316373043> Создатель: %guildOwner%
                                                    :flag_white: Язык: **%language%**
 command.slash.serverInfo.embed.field.title.members.message=Участники
@@ -217,9 +221,8 @@ command.interact.helpCommand.embed.field.option.title.message=Опции
 command.interact.helpCommand.embed.field.option.description.message=> %option%
 command.interact.helpCommand.embed.footer.message=Команда вызвана: %timestamp%
 command.interact.settingsMenu.embed.title.message=Выберите доступный язык
-command.interact.settingsMenu.embed.description.message=Если вы не обнаружили язык который вам нужен но вы знаете этот язык или хотите помочь в развитие бота тогда заходите на [GitHub бота](https://github.com/CookiessTeam/CookiesBot) можете отправить PR или скинуть в на [Дискорд сервер](https://discord.gg/e7AJWyXnKp)
-command.interact.settingsMenu.embed.footer.message=Команда вызвана: %timestamp%
-command.interact.settingsMenu.embed.footer.message=Вы выбрали: %selectLanguage%
+command.interact.settingsMenu.embed.description.message=Если вы не обнаружили язык который вам нужен но вы знаете этот язык или хотите помочь в развитие бота тогда заходите на [GitHub бота](https://github.com/CookiessTeam/CookiesBot) можете отправить PR или скинуть на наш [Дискорд сервер](https://discord.gg/e7AJWyXnKp)
+command.interact.settingsMenu.embed.footer.message=Текущий язык: %selectLanguage%
 
 event.level.up.embed.title=Повышение уровня!
 event.level.up.embed.description=Поздравляю вы получили %level% уровень на сервере %serverName%!
