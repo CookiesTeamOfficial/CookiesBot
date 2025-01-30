@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
-import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
@@ -37,11 +36,6 @@ public class Settings extends Utils implements ICommand {
     @Override
     public CommandCategory getCategory() {
         return CommandCategory.SERVER;
-    }
-
-    @Override
-    public CommandStatus getStatus() {
-        return CommandStatus.OK;
     }
 
     @Override

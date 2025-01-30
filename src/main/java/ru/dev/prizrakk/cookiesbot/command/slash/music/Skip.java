@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
-import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.lavaplayer.GuildMusicManager;
 import ru.dev.prizrakk.cookiesbot.lavaplayer.PlayerManager;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -33,11 +32,6 @@ public class Skip extends Utils implements ICommand {
     @Override
     public CommandCategory getCategory() {
         return CommandCategory.MUSIC;
-    }
-
-    @Override
-    public CommandStatus getStatus() {
-        return CommandStatus.ERROR;
     }
 
     @Override

@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.utils.FileUpload;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
-import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.database.Database;
 import ru.dev.prizrakk.cookiesbot.database.DatabaseUtils;
 import ru.dev.prizrakk.cookiesbot.database.ExpVariable;
@@ -49,11 +48,6 @@ public class RankCard extends Utils implements ICommand {
     @Override
     public CommandCategory getCategory() {
         return CommandCategory.SERVER;
-    }
-
-    @Override
-    public CommandStatus getStatus() {
-        return CommandStatus.OK;
     }
 
     @Override

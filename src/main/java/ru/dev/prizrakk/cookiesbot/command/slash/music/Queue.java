@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
-import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.lavaplayer.GuildMusicManager;
 import ru.dev.prizrakk.cookiesbot.lavaplayer.PlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -41,10 +40,7 @@ public class Queue extends Utils implements ICommand {
         return CommandCategory.MUSIC;
     }
 
-    @Override
-    public CommandStatus getStatus() {
-        return CommandStatus.ERROR;
-    }
+
 
     @Override
     public List<Permission> getRequiredPermissions() {

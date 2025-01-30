@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.entities.channel.ChannelType;
 import org.apache.commons.codec.language.bm.Lang;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
-import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.database.Database;
 import ru.dev.prizrakk.cookiesbot.database.DatabaseUtils;
 import ru.dev.prizrakk.cookiesbot.database.GuildVariable;
@@ -44,11 +43,6 @@ public class NowPlaying extends Utils implements ICommand {
     @Override
     public CommandCategory getCategory() {
         return CommandCategory.MUSIC;
-    }
-
-    @Override
-    public CommandStatus getStatus() {
-        return CommandStatus.ERROR;
     }
 
     @Override

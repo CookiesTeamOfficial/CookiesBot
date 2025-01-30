@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
-import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
@@ -39,11 +38,6 @@ public class UserInfo extends Utils implements ICommand {
     @Override
     public CommandCategory getCategory() {
         return CommandCategory.USER;
-    }
-
-    @Override
-    public CommandStatus getStatus() {
-        return CommandStatus.OK;
     }
 
     @Override

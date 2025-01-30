@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
-import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.awt.Color;
@@ -35,11 +34,6 @@ public class Status extends Utils implements ICommand {
     @Override
     public CommandCategory getCategory() {
         return CommandCategory.OTHER;
-    }
-
-    @Override
-    public CommandStatus getStatus() {
-        return CommandStatus.OK;
     }
 
     @Override

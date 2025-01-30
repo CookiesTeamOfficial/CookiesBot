@@ -7,11 +7,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
-import ru.dev.prizrakk.cookiesbot.command.CommandStatus;
-import ru.dev.prizrakk.cookiesbot.database.Database;
-import ru.dev.prizrakk.cookiesbot.database.DatabaseUtils;
-import ru.dev.prizrakk.cookiesbot.database.GuildVariable;
-import ru.dev.prizrakk.cookiesbot.manager.LangManager;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import javax.script.Bindings;
@@ -44,11 +39,6 @@ public class Calc extends Utils implements ICommand  {
     @Override
     public CommandCategory getCategory() {
         return CommandCategory.FUN;
-    }
-
-    @Override
-    public CommandStatus getStatus() {
-        return CommandStatus.OK;
     }
 
     @Override

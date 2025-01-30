@@ -15,7 +15,6 @@ public interface ICommand {
 
     List<OptionData> getOptions();
     CommandCategory getCategory();
-    CommandStatus getStatus();
     List<Permission> getRequiredPermissions();
 
     void execute(final SlashCommandInteractionEvent event) throws SQLException;
