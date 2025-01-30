@@ -78,24 +78,15 @@ public class CommandManager extends ListenerAdapter {
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         for (final ICommand command : this.commands) {
             if (command.getName().equals(event.getName())) {
+                if (!hasRequiredPermissions(event, command)) {
+                    return;
+                }
                 try {
                     command.execute(event);
                 }
                 catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-            }
-        }
-        for (final ICommand command : this.commands) {
-            if (command.getName().equals(event.getName())) {
-                if (!hasRequiredPermissions(event, command)) {
-                    return;
-                }
-                //try {
-                    //command.execute(event);
-                //} catch (SQLException e) {
-                //    throw new RuntimeException(e);
-                //}
             }
         }
     }
