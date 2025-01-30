@@ -34,9 +34,9 @@ jobs:
           mkdir -p /home/runner/work/CookiesBot/CookiesBot/builds
           mv /home/runner/work/CookiesBot/CookiesBot/target/* /home/runner/work/CookiesBot/CookiesBot/builds
     - name: Upload bot
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
-        name: plugin
+        name: discordBot
         path: builds
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     #- name: Update dependency graph
