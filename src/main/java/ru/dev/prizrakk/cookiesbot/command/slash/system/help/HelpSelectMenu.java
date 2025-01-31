@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
+import ru.dev.prizrakk.cookiesbot.Main;
 import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.CommandManager;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
@@ -40,7 +41,7 @@ public class HelpSelectMenu extends ListenerAdapter {
                     embed.addField(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.field.dev.title.message"), "<@579683756789727243>", true);
                     embed.addField(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.field.programLang.title.message"), "`java 15.0.2 by Amazon Corretto`", true);
                     embed.addField(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.field.discordLibs.title.message"), "`JDA 5.0.0-beta.20`", true);
-                    embed.addField(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.field.version.title.message"), "`pre-release 0.5-rework`", true);
+                    embed.addField(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.field.version.title.message"), Main.currentVersion, true);
                     embed.setFooter(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.footer.message").replace("%timestamp%", timestamp));
                     Button button = Button.link("https://github.com/CookiessTeam/CookiesBot", "GitHub");
                     event.replyEmbeds(embed.build()).setActionRow(button).setEphemeral(true).queue();

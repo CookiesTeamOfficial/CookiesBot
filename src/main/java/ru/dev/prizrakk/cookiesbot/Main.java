@@ -49,6 +49,7 @@ import java.sql.SQLException;
 public class Main extends Utils {
     static JDA jda;
     static Database database;
+    public static String currentVersion = "1.1.0";
     public static void main(String[] args) throws IOException {
         Main main = new Main();
         
@@ -76,7 +77,6 @@ public class Main extends Utils {
         /* Check updates   */
         /* =============== */
         try {
-            String currentVersion = "1.0.0";
             String latestVersion = getLatestReleaseVersion("CookiessTeam", "CookiesBot");
             if (latestVersion == null) {
                 getLogger().error("Failed to get the latest version from GitHub");
