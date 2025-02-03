@@ -47,6 +47,9 @@ command.slash.nowPlaying.description.message=**Имя:** `%title%`
 command.slash.nowPlaying.field.title.message=Продолжительность
 command.slash.nowPlaying.field.description.message=%positionMinutes% мин. %positionSeconds% сек. **/** %durationMinutes% мин. %durationSeconds% сек.
                                                        \n ** %progressBar% **
+command.slash.play.field.title.message=Продолжительность
+command.slash.play.field.description.message=%positionMinutes% мин. %positionSeconds% сек. **/** %durationMinutes% мин. %durationSeconds% сек.
+                                                       \n ** %progressBar% **
 command.slash.play.notFoundMemberInVoice.message=Вы не на голосовом канале!
 command.slash.play.notFoundTrackInURL.message=Не удалось найти трек по запросу: %trackURL%
 command.slash.play.errorWithLoadTrack.message=Ошибка при загрузке трека: %errorMessage%

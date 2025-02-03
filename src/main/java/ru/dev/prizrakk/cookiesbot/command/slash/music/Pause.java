@@ -1,7 +1,7 @@
 package ru.dev.prizrakk.cookiesbot.command.slash.music;
 
+import dev.arbjerg.lavalink.client.LavalinkClient;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -16,21 +16,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NowPlaying extends Utils implements ICommand {
+public class Pause extends Utils implements ICommand {
     private final LavalinkManager lavalinkManager;
     public final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
 
-    public NowPlaying(LavalinkManager lavalinkManager) {
+    public Pause(LavalinkManager lavalinkManager) {
         this.lavalinkManager = lavalinkManager;
     }
     @Override
     public String getName() {
-        return "nowplaying";
+        return "pause";
     }
 
     @Override
     public String getDescription() {
-        return "nowplaying";
+        return "pause off/on";
     }
 
     @Override
@@ -56,30 +56,13 @@ public class NowPlaying extends Utils implements ICommand {
                     .queue();
             return;
         }
-        Guild guild = event.getGuild();
-        final var link = lavalinkManager.getLavalinkClient().getOrCreateLink(guild.getIdLong());
-        final var player = link.getCachedPlayer();
-
-        if (player == null) {
-            event.reply("Not connected or no player available!").queue();
-
-        }
-
-        final var track = player.getTrack();
-
-        if (track == null) {
-            event.reply("Nothing playing currently!").queue();
-
-        }
-
-        final var trackInfo = track.getInfo();
-
-        event.reply(
-                "Currently playing: %s\nDuration: %s/%s".formatted(
-                        trackInfo.getTitle(),
-                        player.getPosition(),
-                        trackInfo.getLength()
-                )
-        ).queue();
+        LavalinkClient client = lavalinkManager.getLavalinkClient();
+        client.getOrCreateLink(event.getGuild().getIdLong())
+                .getPlayer()
+                .flatMap((player) -> player.setPaused(!player.getPaused()))
+                .subscribe((player) -> {
+                    event.reply("Player has been " + (player.getPaused() ? "paused" : "resumed") + "!").queue();
+                });
     }
+
 }

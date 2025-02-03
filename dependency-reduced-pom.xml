@@ -49,6 +49,15 @@
       <id>central</id>
       <url>https://repo.maven.apache.org/maven2/</url>
     </repository>
+    <repository>
+      <id>dv8tion</id>
+      <name>m2-dv8tion</name>
+      <url>https://m2.dv8tion.net/releases</url>
+    </repository>
+    <repository>
+      <id>jitpack</id>
+      <url>https://jitpack.io</url>
+    </repository>
   </repositories>
   <properties>
     <maven.compiler.target>16</maven.compiler.target>

@@ -1,5 +1,6 @@
 package ru.dev.prizrakk.cookiesbot;
 
+import dev.arbjerg.lavalink.libraries.jda.JDAVoiceUpdateListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -10,8 +11,7 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import ru.dev.prizrakk.cookiesbot.command.prefix.fun.Dogs;
-import ru.dev.prizrakk.cookiesbot.command.prefix.fun.Kawaii;
-import ru.dev.prizrakk.cookiesbot.command.prefix.system.Api;
+//import ru.dev.prizrakk.cookiesbot.command.prefix.fun.Kawaii; TODO: Fix broken emote
 import ru.dev.prizrakk.cookiesbot.command.slash.fun.Calc;
 import ru.dev.prizrakk.cookiesbot.command.slash.music.*;
 import ru.dev.prizrakk.cookiesbot.command.slash.server.*;
@@ -28,6 +28,7 @@ import ru.dev.prizrakk.cookiesbot.database.Database;
 import ru.dev.prizrakk.cookiesbot.events.OnJoin;
 import ru.dev.prizrakk.cookiesbot.events.OnLeft;
 import ru.dev.prizrakk.cookiesbot.command.CommandManager;
+import ru.dev.prizrakk.cookiesbot.lavalink.LavalinkManager;
 import ru.dev.prizrakk.cookiesbot.manager.ConfigManager;
 import ru.dev.prizrakk.cookiesbot.manager.console.Console;
 import ru.dev.prizrakk.cookiesbot.manager.LangManager;
@@ -176,6 +177,7 @@ public class Main extends Utils {
     }
     public void jda(Database database) {
         ConfigManager configManager = new ConfigManager();
+        LavalinkManager lavalinkManager = new LavalinkManager(configManager.getProperty("bot.token"), jda);
         Activity activity;
         switch (configManager.getProperty("bot.activity.type")) {
             case "streaming" -> activity = Activity.streaming(configManager.getProperty("bot.activity.status"), configManager.getProperty("bot.activity.status.streaming.url"));
@@ -187,6 +189,7 @@ public class Main extends Utils {
         }
         try {
             jda = JDABuilder.createDefault(configManager.getProperty("bot.token"))
+                    .setVoiceDispatchInterceptor(lavalinkManager.getVoiceUpdateListener())
                     .setStatus(OnlineStatus.ONLINE)
                     .setActivity(activity)
                     .setChunkingFilter(ChunkingFilter.ALL)
@@ -203,6 +206,8 @@ public class Main extends Utils {
             System.exit(1);
         }
 
+        LavalinkManager lavalinkManager1 = new LavalinkManager(configManager.getProperty("bot.token"), jda);
+        //jda.addEventListener(lavalinkManager);
         /* ======================= */
         /* Slash Command           */
         /* ======================= */
@@ -211,12 +216,14 @@ public class Main extends Utils {
         /* fun command */
         commandManager.add(new Calc());
         /* music command */
-        commandManager.add(new Play());
-        commandManager.add(new Skip());
-        commandManager.add(new Stop());
-        commandManager.add(new NowPlaying());
-        commandManager.add(new Queue());
-        commandManager.add(new Repeat());
+        commandManager.add(new Play(lavalinkManager));
+//        commandManager.add(new Skip());
+        commandManager.add(new Stop(lavalinkManager));
+        commandManager.add(new NowPlaying(lavalinkManager));
+        commandManager.add(new Pause(lavalinkManager));
+        commandManager.add(new SetVolume(lavalinkManager));
+//        commandManager.add(new Queue());
+//        commandManager.add(new Repeat());
         /* server */
         commandManager.add(new ServerInfo());
         commandManager.add(new UserInfo());
@@ -242,9 +249,9 @@ public class Main extends Utils {
         /* ======================= */
         /* fun */
         jda.addEventListener(new Dogs(database));
-        jda.addEventListener(new Kawaii(database));
+        //jda.addEventListener(new Kawaii(database));
         /* system */
-        jda.addEventListener(new Api());
+        //jda.addEventListener(new Api());
 
         /* ======================= */
         /* Event                   */
