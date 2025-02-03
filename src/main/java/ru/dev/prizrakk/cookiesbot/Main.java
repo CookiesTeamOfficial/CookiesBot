@@ -206,8 +206,8 @@ public class Main extends Utils {
         /* ======================= */
         /* Slash Command           */
         /* ======================= */
-        CommandManager commandManager1 = new CommandManager(database);
-        CommandManager commandManager = new CommandManager();
+
+        CommandManager commandManager = new CommandManager(database);
         /* fun command */
         commandManager.add(new Calc());
         /* music command */

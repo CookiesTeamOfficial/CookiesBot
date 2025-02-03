@@ -30,13 +30,10 @@ public class CommandManager extends ListenerAdapter {
     private static DatabaseUtils databaseUtils;
 
     public CommandManager(Database database) {
-        this.databaseUtils = new DatabaseUtils(database);
+        databaseUtils = new DatabaseUtils(database);
+        commands = new ArrayList<ICommand>();
     }
     public static List<ICommand> commands;
-
-    public CommandManager() {
-        this.commands = new ArrayList<ICommand>();
-    }
 
     private boolean commandsRegistered = false;
 
@@ -61,7 +58,7 @@ public class CommandManager extends ListenerAdapter {
     @Override
     public void onGuildJoin(final GuildJoinEvent event) {
         for (final Guild guild : event.getJDA().getGuilds()) {
-            for (final ICommand command : this.commands) {
+            for (final ICommand command : commands) {
                 if (command.getOptions() == null) {
                     guild.upsertCommand(command.getName(), command.getDescription()).queue();
                 }
@@ -74,7 +71,7 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        for (final ICommand command : this.commands) {
+        for (final ICommand command : commands) {
             if (command.getName().equals(event.getName())) {
                 if (!hasRequiredPermissions(event, command)) {
                     return;
@@ -90,7 +87,7 @@ public class CommandManager extends ListenerAdapter {
     }
 
     public void add(final ICommand command) {
-        this.commands.add(command);
+        commands.add(command);
     }
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
