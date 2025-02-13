@@ -62,7 +62,7 @@ public class Play extends Utils implements ICommand {
     public void execute(SlashCommandInteractionEvent event) {
         this.event = event;
         if (event.getChannelType() != ChannelType.TEXT) {
-            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot"))
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.doNotSendPrivateMessagesToTheBot"))
                     .setEphemeral(true)
                     .queue();
             return;
@@ -73,18 +73,8 @@ public class Play extends Utils implements ICommand {
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if (!memberVoiceState.inAudioChannel()) {
-            event.reply(getLangMessage(event.getGuild(), "command.slash.play.notFoundMemberInVoice.message")).queue();
-            return;
-        }
-
-        Member self = event.getGuild().getSelfMember();
-        GuildVoiceState selfVoiceState = self.getVoiceState();
-
-        if (!selfVoiceState.inAudioChannel()) {
-            event.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
-        } else if (!selfVoiceState.getChannel().equals(memberVoiceState.getChannel())) {
-            event.reply(getLangMessage(event.getGuild(), "command.slash.play.notFoundMemberInVoice.message")).queue();
-
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.play.notFoundMemberInVoice-message")
+                    .replace("%voiceChannel%", memberVoiceState.getChannel().getAsMention())).queue();
             return;
         }
 

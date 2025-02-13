@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static spark.Spark.*;
 
+import ru.dev.prizrakk.cookiesbot.manager.ColorManager;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 public class ApiManager extends Utils {
@@ -16,10 +17,10 @@ public class ApiManager extends Utils {
     private boolean apisRegistered = false;
 
     public void registerApis() {
-        getLogger().debug("===================");
-        getLogger().debug("Loading web api");
-        getLogger().debug("===================");
-        getLogger().debug("Load on https://localhost:1111/");
+        getLogger().info(ColorManager.ANSI_BLUE + "===================");
+        getLogger().info("Loading web api");
+        getLogger().info(ColorManager.ANSI_BLUE + "===================");
+        getLogger().info("Load on http://localhost:"+ getConfig().getProperty("web-api.port")  +"/");
         if (!apisRegistered) {
             for (ApiInterface api : this.apis) {
                 switch (api.type()) {
@@ -39,7 +40,7 @@ public class ApiManager extends Utils {
                         UnsupportedOperationException e = new UnsupportedOperationException();
                         getLogger().error("Unsupported HTTP method: " + api.type(), e);
                 }
-                getLogger().debug("API " + api.getName() + " registered on the way: " + api.getPath());
+                getLogger().info("API " + api.getName() + " registered on the way: " + api.getPath());
             }
             notFound((req, res) -> {
                 res.type("application/json");

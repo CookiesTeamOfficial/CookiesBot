@@ -4,69 +4,111 @@ import dev.arbjerg.lavalink.client.*;
 import dev.arbjerg.lavalink.client.event.*;
 import dev.arbjerg.lavalink.libraries.jda.JDAVoiceUpdateListener;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.exceptions.InvalidTokenException;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.dev.prizrakk.cookiesbot.manager.ColorManager;
+import ru.dev.prizrakk.cookiesbot.manager.ConfigManager;
+
+import java.util.List;
+import java.util.Map;
+
+import static ru.dev.prizrakk.cookiesbot.util.Utils.getLogger;
 
 public class LavalinkManager {
     private static final Logger LOG = LoggerFactory.getLogger(LavalinkManager.class);
-    private final LavalinkClient lavalinkClient;
+    private LavalinkClient lavalinkClient = null;
     private static final int SESSION_INVALID = 4006;
     private JDA jda;
 
     public LavalinkManager(String token, JDA jda) {
-        this.lavalinkClient = new LavalinkClient(Helpers.getUserIdFromToken(token));
-        registerLavalinkListeners();  // Регистрируем события
-        registerLavalinkNodes();      // Регистрируем узлы
-        this.jda = jda;
+        try {
+            this.lavalinkClient = new LavalinkClient(Helpers.getUserIdFromToken(token));
+            getLogger().info(ColorManager.ANSI_BLUE + "===================");
+            getLogger().info("Load lavalink nodes");
+            getLogger().info(ColorManager.ANSI_BLUE + "===================");
+            registerLavalinkListeners();
+            registerLavalinkNodes();
+            this.jda = jda;
+        } catch (InvalidTokenException e) {
+            getLogger().error("The provided token is invalid!", e);
+            System.exit(1);
+        }
+        catch (Exception e) {
+            getLogger().error("An unexpected error occurred!", e);
+            System.exit(1);
+        }
     }
 
     public LavalinkClient getLavalinkClient() {
         return lavalinkClient;
     }
 
-    // Возвращаем JDAVoiceUpdateListener для работы с голосовыми каналами
+
     public JDAVoiceUpdateListener getVoiceUpdateListener() {
         return new JDAVoiceUpdateListener(lavalinkClient);
     }
 
-    private void registerLavalinkNodes() {
-        lavalinkClient.addNode(
-                new NodeOptions.Builder()
-                        .setName("Node #1")
-                        .setServerUri("ws://127.0.0.1:2333")
-                        .setPassword("4798869em")
-                        .build()
-        );
+    public void registerLavalinkNodes() {
+        ConfigManager configManager = new ConfigManager();
+        Map<String, Object> nodesMap = configManager.getMap("lavalink.node");
+        if (nodesMap == null || nodesMap.isEmpty()) {
+            getLogger().warn("No Lavalink nodes found in config!");
+            return;
+        }
+
+        for (Map.Entry<String, Object> entry : nodesMap.entrySet()) {
+            if (!(entry.getValue() instanceof Map)) continue;
+
+            Map<String, String> node = (Map<String, String>) entry.getValue();
+            String name = node.get("name");
+            String url = node.get("url");
+            String password = node.get("password");
+
+            lavalinkClient.addNode(
+                    new NodeOptions.Builder()
+                            .setName(name)
+                            .setServerUri(url)
+                            .setPassword(password)
+                            .build()
+            );
+
+            getLogger().info("Registered Lavalink node: " + name);
+
+
+        }
     }
 
+
     private void registerLavalinkListeners() {
-        // Подписываемся на события Lavalink
+
+
         lavalinkClient.on(ReadyEvent.class).subscribe((event) -> {
             final LavalinkNode node = event.getNode();
-            LOG.info("Node '{}' is ready, session id is '{}'", node.getName(), event.getSessionId());
+            getLogger().info("Node '" + node.getName() + "' is ready, session id is '" + event.getSessionId() + "'");
         });
 
         lavalinkClient.on(StatsEvent.class).subscribe((event) -> {
             final LavalinkNode node = event.getNode();
-            LOG.info(
-                    "Node '{}' has stats, current players: {}/{} (link count {})",
-                    node.getName(),
-                    event.getPlayingPlayers(),
-                    event.getPlayers(),
-                    lavalinkClient.getLinks().size()
-            );
+            getLogger().debug("Node '" + node.getName()+ "' has stats, current players: " + event.getPlayingPlayers()+ "/" + event.getPlayers() + "(link count " + event.getPlayers() + ")");
         });
 
         lavalinkClient.on(TrackStartEvent.class).subscribe((event) -> {
-            LOG.trace("{}: track started: {}", event.getNode().getName(), event.getTrack().getInfo());
+           getLogger().debug(event.getNode().getName() + ": track started: {}" + event.getTrack().getInfo());
         });
 
         lavalinkClient.on(TrackEndEvent.class).subscribe((event) -> {
-            LOG.trace("{}: track ended: {} due to: {}", event.getNode().getName(), event.getTrack().getInfo(), event.getEndReason());
+            getLogger().debug(event.getNode().getName() + ": track ended: " + event.getTrack().getInfo() + "due to: " + event.getEndReason());
         });
 
         lavalinkClient.on(EmittedEvent.class).subscribe((event) -> {
-            LOG.info("Node '{}' emitted event: {}", event.getNode().getName(), event);
+            getLogger().debug("Node '" + event.getNode().getName() + "' emitted event: " + event);
         });
 
         // Переподключение при ошибке сессии

@@ -47,7 +47,7 @@ public class ServerInfo extends Utils implements ICommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         if (event.getChannelType() != ChannelType.TEXT) {
-            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
             return;
         }
         Guild guild = event.getGuild();
@@ -97,20 +97,20 @@ public class ServerInfo extends Utils implements ICommand {
         }
 
         switch (event.getGuild().getBoostTier()) {
-            case NONE -> boostTier = "<:Boost0:1209375787040641054> " + getLangMessage(guild, "command.slash.serverInfo.boostTier0.message");
-            case TIER_1 -> boostTier = "<:Boost1:1209375792685907978> " + getLangMessage(guild, "command.slash.serverInfo.boostTier1.message");
-            case TIER_2 -> boostTier = "<:Boost2Dark:1209375790459002880> " + getLangMessage(guild, "command.slash.serverInfo.boostTier2.message");
-            case TIER_3 -> boostTier = "<:Boost3Dark:1209375788739076136> " + getLangMessage(guild, "command.slash.serverInfo.boostTier3.message");
-            case UNKNOWN -> boostTier = "<:Boost0:1209375787040641054> " + getLangMessage(guild, "command.slash.serverInfo.boostTierUnknown.message");
-            default -> boostTier = "<:Boost0:1209375787040641054> " + getLangMessage(guild, "command.slash.serverInfo.boostTierNotFound.message");
+            case NONE -> boostTier = "<:Boost0:1209375787040641054> " + getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.boost.Tier0");
+            case TIER_1 -> boostTier = "<:Boost1:1209375792685907978> " + getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.boost.Tier1");
+            case TIER_2 -> boostTier = "<:Boost2Dark:1209375790459002880> " + getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.boost.Tier2");
+            case TIER_3 -> boostTier = "<:Boost3Dark:1209375788739076136> " + getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.boost.Tier3");
+            case UNKNOWN -> boostTier = "<:Boost0:1209375787040641054> " + getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.boost.TierUnknown");
+            default -> boostTier = "<:Boost0:1209375787040641054> " + getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.boost.TierNotFound");
         }
         switch (guild.getVerificationLevel()) {
-            case UNKNOWN -> verifLevel = getLangMessage(guild, "command.slash.serverInfo.verificationLevel.unknown.message");
-            case NONE -> verifLevel = getLangMessage(guild, "command.slash.serverInfo.verificationLevel.none.message");
-            case LOW -> verifLevel = getLangMessage(guild, "command.slash.serverInfo.verificationLevel.low.message");
-            case MEDIUM -> verifLevel = getLangMessage(guild, "command.slash.serverInfo.verificationLevel.medium.message");
-            case HIGH -> verifLevel = getLangMessage(guild, "command.slash.serverInfo.verificationLevel.high.message");
-            case VERY_HIGH -> verifLevel = getLangMessage(guild, "command.slash.serverInfo.verificationLevel.veryHigh.message");
+            case UNKNOWN -> verifLevel = getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.verificationLevel.unknown");
+            case NONE -> verifLevel = getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.verificationLevel.none");
+            case LOW -> verifLevel = getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.verificationLevel.low");
+            case MEDIUM -> verifLevel = getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.verificationLevel.medium");
+            case HIGH -> verifLevel = getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.verificationLevel.high");
+            case VERY_HIGH -> verifLevel = getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.verificationLevel.veryHigh");
         }
         OffsetDateTime createTime = event.getGuild().getTimeCreated();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -119,8 +119,8 @@ public class ServerInfo extends Utils implements ICommand {
 
         EmbedBuilder embed = new EmbedBuilder();
         embed.setThumbnail(guild.getIconUrl());
-        embed.setTitle(getLangMessage(guild, "command.slash.serverInfo.embed.title.message").replace("%guildName%", guild.getName()));
-        embed.setDescription(getLangMessage(guild, "command.slash.serverInfo.embed.description.message")
+        embed.setTitle(getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.embed.title").replace("%guildName%", guild.getName()));
+        embed.setDescription(getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.embed.description")
                 .replace("%createTime%", formattedCreateTime)
                 .replace("%location%", guild.getLocale().getNativeName())
                 .replace("%verifyLevel%", verifLevel)
@@ -128,20 +128,20 @@ public class ServerInfo extends Utils implements ICommand {
                 .replace("%boostCount%", guild.getBoostCount() + "")
                 .replace("%boostRole%", "Error 512: Bad Gateway")
                 .replace("%guildOwner%", guild.getOwner().getAsMention())
-                .replace("%language%", getGuildOnSlash(guild).getLang()));
-        embed.addField(getLangMessage(guild, "command.slash.serverInfo.embed.field.title.members.message"), " "
-                + getLangMessage(guild, "command.slash.serverInfo.embed.field.description.members.message")
+                .replace("%language%", getGuildInDatabase(guild).getLang()));
+        embed.addField(getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.embed.field.members.title"), " "
+                + getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.embed.field.members.description")
                 .replace("%allUsers%", guild.getMemberCount() + "")
                 .replace("%users%", users + "")
                 .replace("%bots%", bots + ""), true);
-        embed.addField(getLangMessage(guild, "command.slash.serverInfo.field.title.status.message"), " "
-                + getLangMessage(guild, "command.slash.serverInfo.field.description.status.message")
+        embed.addField(getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.embed.field.status.title"), " "
+                + getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.embed.field.status.description")
                 .replace("%onlineUsers%", onlineUsers + "")
                 .replace("%idleUsers%", idleUsers + "")
                 .replace("%dndUsers%", dndUsers + "")
                 .replace("%offlineUsers%", offlineUsers + ""), true);
-        embed.addField(getLangMessage(guild, "command.slash.serverInfo.field.title.channel.message"), " "
-                + getLangMessage(guild, "command.slash.serverInfo.field.description.channel.message")
+        embed.addField(getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.embed.field.channel.title"), " "
+                + getLangMessage(event.getMember().getUser(),guild, "command.slash.serverInfo.embed.field.channel.description")
                 .replace("%categoryChannels%", categoryChannels + "")
                 .replace("%textChannels%", textChannels + "")
                 .replace("%voiceChannels%", voiceChannels + "")

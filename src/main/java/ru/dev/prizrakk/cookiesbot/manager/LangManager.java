@@ -1,75 +1,82 @@
 package ru.dev.prizrakk.cookiesbot.manager;
 
 import net.dv8tion.jda.api.entities.Member;
+import org.yaml.snakeyaml.Yaml;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
 import java.io.*;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 public class LangManager extends Utils {
     private static final String LANG_DIRECTORY = "lang/";
     private static final String DEFAULT_LANG = "Russia";
-
-    private static Map<String, Properties> languages = new HashMap<>();
-    public static Map<String, Properties> getLanguages() {
-        return languages;
-    }
+    private static final Yaml yaml = new Yaml();
+    private static Map<String, Map<String, Object>> languages = new HashMap<>();
 
     public static void loadLanguages() {
         File langDir = new File(LANG_DIRECTORY);
         if (!langDir.exists()) {
-            getLogger().warn("The folder with languages was not found, I am creating a new one: " + LANG_DIRECTORY);
+            getLogger().warn("The folder with languages was not found, creating a new one: " + LANG_DIRECTORY);
             langDir.mkdir();
             downloadLanguage();
         }
 
-        File[] langFiles = langDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".lang"));
+        File[] langFiles = langDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".yml"));
         if (langFiles == null) {
-            getLogger().warn("There are no language files in the directory: " + LANG_DIRECTORY);
+            getLogger().warn("No language files found in directory: " + LANG_DIRECTORY);
             return;
         }
 
         for (File file : langFiles) {
-            String langName = file.getName().replace(".lang", "");
-            Properties properties = new Properties();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
-                StringBuilder valueBuilder = new StringBuilder();
-                String line;
-                String key = null;
-                while ((line = reader.readLine()) != null) {
-                    line = line.trim();
-                    if (line.isEmpty() || line.startsWith("#")) continue; // Пропуск пустых строк и комментариев
+            String langName = file.getName().replace(".yml", "");
+            try (InputStream inputStream = new FileInputStream(file)) {
+                Map<String, Object> rawData = yaml.load(inputStream);
+                if (rawData == null) {
+                    getLogger().warn("Empty language file: " + file.getName());
+                    continue;
+                }
 
-                    if (line.contains("=")) {
-                        if (key != null) {
-                            properties.put(key, valueBuilder.toString().trim());
-                            valueBuilder.setLength(0);
-                        }
-                        String[] parts = line.split("=", 2);
-                        key = parts[0].trim();
-                        valueBuilder.append(parts[1].trim());
-                    } else if (key != null) {
-                        valueBuilder.append("\n").append(line.trim());
-                    }
-                }
-                if (key != null) {
-                    properties.put(key, valueBuilder.toString().trim());
-                }
-                languages.put(langName, properties);
-                getLogger().info("Language data loaded for language: " + langName);
+                Map<String, Object> data = new HashMap<>();
+                flattenMap("", rawData, data);
+
+                languages.put(langName, data);
+                getLogger().info("Language data loaded for: " + langName);
             } catch (IOException e) {
-                getLogger().error("Error loading language data for language " + langName + ": ", e);
+                getLogger().error("Error loading language data for " + langName + ": ", e);
             }
         }
     }
+
+    /**
+     * Рекурсивно превращает вложенный Map в плоский Map<String, String>
+     */
+    // Измененный метод flattenMap с обработкой ClassCastException и отдельными проверками для Boolean и Number
+    private static void flattenMap(String prefix, Map<String, Object> source, Map<String, Object> target) {
+        for (Map.Entry<String, Object> entry : source.entrySet()) {
+            String key = prefix.isEmpty() ? entry.getKey() : prefix + "." + entry.getKey();
+            Object value = entry.getValue();
+
+            try {
+                if (value instanceof Map) {
+                    flattenMap(key, (Map<String, Object>) value, target);
+                } else {
+                    target.put(key, value); // Теперь сохраняем Object
+                }
+            } catch (ClassCastException e) {
+                getLogger().error("Error parsing key: " + key + " with value: " + value, e);
+                target.put(key, String.valueOf(value));
+            }
+        }
+    }
+
+
+
+
+
 
     public static void reloadLanguages() {
         languages.clear();
@@ -79,35 +86,29 @@ public class LangManager extends Utils {
     public static Set<String> getAvailableLanguages() {
         return languages.keySet();
     }
+    public static Map<String, Object> getLanguageProperties(String langKey) {
+        return languages.getOrDefault(langKey, new HashMap<>()); // Возвращаем свойства языка или пустую Map
+    }
+
 
     private static void downloadLanguage() {
-        // URL, откуда будут загружаться файлы
         String baseUrl = "https://mirror.dev-prizrakk.ru/cookiesteam/cookiesbot/lang/";
+        Path langDirectory = Paths.get(LANG_DIRECTORY);
 
-        // Папка, куда будут сохранены файлы
-        Path langDirectory = Paths.get("lang");
-
-        // Создаем папку, если она не существует
         if (!Files.exists(langDirectory)) {
             try {
                 Files.createDirectory(langDirectory);
             } catch (IOException e) {
-                getLogger().error("Error when creating lang folder:", e);
+                getLogger().error("Error creating lang folder:", e);
                 return;
             }
         }
 
-        // Список имен файлов для загрузки
-        String[] langFiles = new String[]{
-                "Russia.lang",
-                "English.lang"
-                // Добавь здесь другие файлы, если нужно
-        };
+        String[] langFiles = {"Russia.yml", "English.yml"};
 
         for (String langFile : langFiles) {
             try (BufferedInputStream in = new BufferedInputStream(new URL(baseUrl + langFile).openStream());
                  FileOutputStream fileOutputStream = new FileOutputStream(langDirectory.resolve(langFile).toFile())) {
-
                 byte[] dataBuffer = new byte[1024];
                 int bytesRead;
                 while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
@@ -115,56 +116,43 @@ public class LangManager extends Utils {
                 }
                 getLogger().info(langFile + " successfully downloaded and saved in the lang folder.");
             } catch (IOException e) {
-                getLogger().error("Error uploading file " + langFile, e);
+                getLogger().error("Error downloading file " + langFile, e);
             }
-        }
-    }
-
-    private static void createLangFile(String fileName, String[] content) {
-        try {
-            File file = new File(LANG_DIRECTORY + fileName);
-            if (!file.exists()) {
-                try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(LANG_DIRECTORY + fileName))) {
-                    for (String line : content) {
-                        writer.write(line);
-                        writer.newLine();
-                    }
-                    getLogger().info("File created: " + fileName);
-                }
-            }
-        } catch (IOException e) {
-            getLogger().error("Error creating file " + fileName + ": ", e);
         }
     }
 
     public static String getMessage(String lang, String key) {
-        Properties properties = languages.get(lang);
-        if (properties != null) {
-            String value = properties.getProperty(key);
-            if (value != null) {
-                return value.replace("\\n", "\n");
+        try {
+            Map<String, Object> properties = languages.get(lang);
+            if (properties == null) {
+                getLogger().warn("Language not found: " + lang);
+                return key;
             }
-        } else {
-            getLogger().error("Language file not found for language: " + lang);
-        }
-        return key; // Вернуть ключ, если сообщение не найдено
-    }
-    public static String getMessage(Member member, String key) {
 
-        String lang = "s";
-        Properties properties = languages.get(lang);
-        if (properties != null) {
-            String value = properties.getProperty(key);
-            if (value != null) {
-                return value.replace("\\n", "\n");
+            Object value = properties.get(key);
+            if (value instanceof String) {
+                return (String) value;
+            } else if (value instanceof List) {
+                return String.join("\n", (List<String>) value); // Склеиваем массив в строку
+            } else {
+                getLogger().warn("Unsupported value type for key: " + key);
+                return key;
             }
-        } else {
-            getLogger().error("Language file not found for language: " + lang);
+        } catch (Exception error) {
+            getLogger().error("Error getting message for lang: " + lang + ", key: " + key, error);
+            return key;
         }
-        return key; // Вернуть ключ, если сообщение не найдено
+    }
+
+
+
+
+    public static String getMessage(Member member, String key) {
+        String lang = DEFAULT_LANG;
+        return getMessage(lang, key);
     }
 
     public static String getMessage(String key) {
-        return getMessage(DEFAULT_LANG, key); // Получить сообщение на языке по умолчанию
+        return getMessage(DEFAULT_LANG, key);
     }
 }

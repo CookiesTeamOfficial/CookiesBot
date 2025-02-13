@@ -35,68 +35,68 @@ public class HelpSelectMenu extends ListenerAdapter {
             switch (selectedValue) {
                 case "info" -> {
                     EmbedBuilder embed = new EmbedBuilder();
-                    embed.setTitle(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.embed.title.message"));
+                    embed.setTitle(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpSelectMenu.info.embed.title"));
                     embed.setColor(new Color(255, 104, 0));
-                    embed.setDescription(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.embed.description.message"));
-                    embed.addField(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.field.dev.title.message"), "<@579683756789727243>", true);
-                    embed.addField(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.field.programLang.title.message"), "`java 15.0.2 by Amazon Corretto`", true);
-                    embed.addField(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.field.discordLibs.title.message"), "`JDA 5.0.0-beta.20`", true);
-                    embed.addField(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.field.version.title.message"), Main.currentVersion, true);
-                    embed.setFooter(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.info.footer.message").replace("%timestamp%", timestamp));
-                    Button button = Button.link("https://github.com/CookiessTeam/CookiesBot", "GitHub");
+                    embed.setDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpSelectMenu.info.embed.description"));
+                    embed.addField(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpSelectMenu.info.field.dev.title"), "<@579683756789727243>", true);
+                    embed.addField(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpSelectMenu.info.field.programLang.title"), "`java 15.0.2 by Amazon Corretto`", true);
+                    embed.addField(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpSelectMenu.info.field.discordLibs.title"), "`JDA 5.0.0-beta.20`", true);
+                    embed.addField(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpSelectMenu.info.field.version.title"), Main.currentVersion, true);
+                    embed.setFooter(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpSelectMenu.info.footer").replace("%timestamp%", timestamp));
+                    Button button = Button.link("https://github.com/CookiesTeamOfficial/CookiesBot", "GitHub");
                     event.replyEmbeds(embed.build()).setActionRow(button).setEphemeral(true).queue();
                 }
                 case "command" -> {
                     EmbedBuilder embed = new EmbedBuilder();
                     embed.setColor(new Color(255, 104, 0));
-                    embed.setTitle(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.command.embed.title.message"));
-                    embed.setDescription(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.command.embed.description.message"));
-                    embed.setFooter(Utils.getLangMessage(event.getGuild(), "command.interact.helpSelectMenu.command.embed.footer.message").replace("%timestamp%", timestamp));
+                    embed.setTitle(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpSelectMenu.command.embed.title"));
+                    embed.setDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpSelectMenu.command.embed.description"));
+                    embed.setFooter(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpSelectMenu.command.embed.footer").replace("%timestamp%", timestamp));
                     event.replyEmbeds(embed.build()).setActionRow(
                             StringSelectMenu.create("helpcommand")
                                     .addOptions(
-                                            SelectOption.of(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.server.title.message"), "server")
-                                                    .withDescription(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.server.description.message"))
+                                            SelectOption.of(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.server.title"), "server")
+                                                    .withDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.server.description"))
                                                     .withEmoji(Emoji.fromUnicode("🏠")),
-                                            SelectOption.of(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.admin.title.message"), "admin")
-                                                    .withDescription(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.admin.description.message"))
+                                            SelectOption.of(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.admin.title"), "admin")
+                                                    .withDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.admin.description"))
                                                     .withEmoji(Emoji.fromUnicode("🔧")),
-                                            SelectOption.of(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.fun.title.message"), "fun")
-                                                    .withDescription(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.fun.description.message"))
+                                            SelectOption.of(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.fun.title"), "fun")
+                                                    .withDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.fun.description"))
                                                     .withEmoji(Emoji.fromUnicode("🎉")),
-                                            SelectOption.of(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.music.title.message"), "music")
-                                                    .withDescription(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.music.description.message"))
+                                            SelectOption.of(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.music.title"), "music")
+                                                    .withDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.music.description"))
                                                     .withEmoji(Emoji.fromUnicode("🎵")),
-                                            SelectOption.of(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.prefix.title.message"), "prefix")
-                                                    .withDescription(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.prefix.description.message"))
+                                            SelectOption.of(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.prefix.title"), "prefix")
+                                                    .withDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.prefix.description"))
                                                     .withEmoji(Emoji.fromUnicode("🔤")),
-                                            SelectOption.of(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.user.title.message"), "user")
-                                                    .withDescription(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.user.description.message"))
+                                            SelectOption.of(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.user.title"), "user")
+                                                    .withDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.user.description"))
                                                     .withEmoji(Emoji.fromUnicode("🔤")),
-                                            SelectOption.of(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.other.title.message"), "other")
-                                                    .withDescription(Utils.getLangMessage(event.getGuild(),"command.interact.helpSelectMenu.actionRow.other.description.message"))
+                                            SelectOption.of(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.other.title"), "other")
+                                                    .withDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpSelectMenu.actionRow.other.description"))
                                                     .withEmoji(Emoji.fromUnicode("❓"))
                                     ).build()
                     ).setEphemeral(true).queue();
                 }
                 case "settings" -> {
                     if (event.getChannelType() != ChannelType.TEXT) {
-                        event.reply(Utils.getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+                        event.reply(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
                         return;
                     }
                     if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
-                        event.reply(Utils.getLangMessage(event.getGuild(),"command.interact.settings.noPerm.message")).queue();
+                        event.reply(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.settings.noPerm")).queue();
                     } else {
                         EmbedBuilder embed = new EmbedBuilder();
                         embed.setColor(new Color(255, 104, 0));
-                        embed.setTitle(Utils.getLangMessage(event.getGuild(), "command.interact.settings.embed.title.message"));
-                        embed.setDescription(Utils.getLangMessage(event.getGuild(), "command.interact.settings.embed.description.message"));
-                        embed.setFooter(Utils.getLangMessage(event.getGuild(), "command.interact.settings.embed.footer.message").replace("%timestamp%", timestamp));
+                        embed.setTitle(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.settings.embed.title"));
+                        embed.setDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.settings.embed.description"));
+                        embed.setFooter(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.settings.embed.footer").replace("%timestamp%", timestamp));
                         event.replyEmbeds(embed.build()).setActionRow(
                                 StringSelectMenu.create("settingsmenu")
                                         .addOptions(
-                                                SelectOption.of(Utils.getLangMessage(event.getGuild(),"command.interact.settings.actionRow.language.title.message"), "language")
-                                                        .withDescription(Utils.getLangMessage(event.getGuild(), "command.interact.settings.actionRow.language.description.message"))
+                                                SelectOption.of(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.settings.actionRow.language.title"), "language")
+                                                        .withDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.settings.actionRow.language.description"))
 
                                         ).build()
                         ).setEphemeral(true).queue();
@@ -109,7 +109,7 @@ public class HelpSelectMenu extends ListenerAdapter {
 
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(new Color(255, 104, 0));
-            embed.setTitle(Utils.getLangMessage(event.getGuild(), "command.interact.helpCommand.embed.title.message").replace("%category%", selectedValue.toUpperCase()));
+            embed.setTitle(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpCommand.embed.title").replace("%category%", selectedValue.toUpperCase()));
 
             CommandCategory category;
             switch (selectedValue) {
@@ -132,7 +132,7 @@ public class HelpSelectMenu extends ListenerAdapter {
                     category = CommandCategory.OTHER;
                     break;
                 default:
-                    embed.setDescription(Utils.getLangMessage(event.getGuild(), "command.interact.helpCommand.embed.notFoundCategory.message"));
+                    embed.setDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpCommand.embed.notFoundCategory"));
                     category = null;
                     break;
             }
@@ -151,19 +151,19 @@ public class HelpSelectMenu extends ListenerAdapter {
                                         .append("\n");
                             }
                         }
-                        embed.addField(Utils.getLangMessage(event.getGuild(),"command.interact.helpCommand.embed.field.name.title.message"),
-                                 Utils.getLangMessage(event.getGuild(), "command.interact.helpCommand.embed.field.name.description.message")
+                        embed.addField(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.helpCommand.embed.field.name.title"),
+                                 Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpCommand.embed.field.name.description")
                                          .replace("%nameCommand%",command.getName()), false);
-                        embed.addField(Utils.getLangMessage(event.getGuild(), "command.interact.helpCommand.embed.field.description.title.message"),
-                                Utils.getLangMessage(event.getGuild(), "command.interact.helpCommand.embed.field.description.description.message")
+                        embed.addField(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpCommand.embed.field.description.title"),
+                                Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpCommand.embed.field.description.description")
                                         .replace("%descriptionCommand%", command.getDescription()), true);
-                        embed.addField(Utils.getLangMessage(event.getGuild(), "command.interact.helpCommand.embed.field.option.title.message"),
-                                Utils.getLangMessage(event.getGuild(), "command.interact.helpCommand.embed.field.option.description.message")
+                        embed.addField(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpCommand.embed.field.option.title"),
+                                Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpCommand.embed.field.option.description")
                                         .replace("%option%", (optionsDescription.length() > 0 ? optionsDescription.toString() : "Нет опций")) , true);
                     }
                 }
             }
-            embed.setFooter(Utils.getLangMessage(event.getGuild(), "command.interact.helpCommand.embed.footer.message").replace("%timestamp%", timestamp));
+            embed.setFooter(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.helpCommand.embed.footer").replace("%timestamp%", timestamp));
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
         }
     }

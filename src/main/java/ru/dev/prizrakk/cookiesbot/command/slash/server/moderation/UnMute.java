@@ -46,15 +46,15 @@ public class UnMute extends Utils implements ICommand {
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         Member member = event.getOption("user").getAsMember();
         if (member == null) {
-            event.reply(getLangMessage(event.getGuild(), "command.slash.unmute.notFoundMember.message")).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.unmute.message.notFoundMember")).setEphemeral(true).queue();
             return;
         }
         try {
             member.timeoutFor(0, TimeUnit.MILLISECONDS).queue();
         } catch (Exception e) {
-            event.reply(getLangMessage(event.getGuild(), "command.slash.unmute.errorUnMuteUser.message").replace("%errorLog%", e.getMessage())).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.unmute.message.errorUnMuteUser").replace("%errorLog%", e.getMessage())).setEphemeral(true).queue();
             return;
         }
-        event.reply(getLangMessage(event.getGuild(), "command.slash.unmute.successfulUnMute.message")).setEphemeral(true).queue();
+        event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.unmute.message.successfulUnMute")).setEphemeral(true).queue();
     }
 }

@@ -1,0 +1,373 @@
+language:
+  name: "Russia"
+  emoji: "🇷🇺"
+  description: "Powered by dev_prizrakk"
+  version: "0.2"
+welcome:
+  message: "Welcome to the server!"
+goodbye:
+  message: "Goodbye!"
+console:
+  not-work.message: "Console is unavailable"
+command:
+  noHasPermissionUser-title: "Access Error"
+  noHasPermissionUser-description: "An error occurred when trying to use the command: Access denied user has no privileges: %noHasPermission%"
+  noHasPermissionUser-footer: "The error was raised in %time%"
+  doNotSendPrivateMessagesToTheBot: "This command can only be used on the server."
+
+  prefix:
+    dogs:
+      message: "Here's your dog :)"
+      button-message: "Link to the dog"
+    kawaii:
+      hug:
+        none-message: "Hugged myself!"
+        mentioned-message: "Hugged %user%!"
+      kiss:
+        none-message: "Kissed myself (What the hell????)"
+        mentioned-message: "Kissed %user%!"
+      kill:
+        none-message: "Killed himself!"
+        mentioned-message: "Killed %user%!"
+      dead:
+        none-message: "Died of depression!"
+        mentioned-message: "Died because of %user%!"
+      cry:
+        none-message: "I'm crying!"
+        mentioned-message: "I'm crying because of %user%!"
+      errorMentioned-message: "Please specify the correct user!"
+  slash:
+    calc:
+      errorEngine-message: "Error: JavaScript engine is not available."
+      embed:
+        title: "Calculator"
+        description: "Your result: %result%"
+        footer: "Calculator version %version%"
+      error-message: "Sorry, I couldn't do the math, it's too hard for me."
+    nowPlaying:
+      noConnected-voice-player: "An error has occurred, contact the bot developer! Error code: 'no found lavalink.player'"
+      notFoundMember-message: "You're not on the voice channel :("
+      notFoundNotInVoice-message: "Oh, wait for me, I forgot to log in"
+      notFoundMemberInVoice-message: "You're not in %voiceChannel% with me, come to me"
+      notFoundQueue-message: "Nothing is playing right now"
+      playstatus:
+        trueSound: "▶️ Playback"
+        falseSound: "⏸️ Pause"
+      embed:
+        title: "%playStatus% | %trackTitle%"
+        description: |
+          **Name:** '%title%'
+          **Link:** **[click](%uri%)**
+          **Repeat:** '%isRepeat%'
+        footer: "Very cool song 👍"
+        field:
+          author:
+            title: " 🎵 Artist:"
+          duration:
+            title: " ⏳ Duration:"
+          link:
+            title: " 📎 Link:"
+            description: "[Click to listen](%trackURI%)"
+          volume:
+            title: "🔊 Volume"
+          progressbar:
+            title: " 📊 Progress:"
+            description: "%position% ** %progressBar% ** %length%"
+
+    play:
+      noConnected-voice-player: "An error has occurred, contact the bot developer! Error code: 'no found lavalink.player'"
+      notFoundMember-message: "You're not on the voice channel :("
+      notFoundNotInVoice-message: "Oh, wait for me, I forgot to log in"
+      notFoundMemberInVoice-message: "You're not in %voiceChannel% with me, come to me"
+      notFoundQueue-message: "Nothing is playing right now"
+      playstatus:
+        trueSound: "▶️ Playback"
+        falseSound: "⏸️ Pause"
+      embed:
+        title: "%playStatus% | %trackTitle%"
+        description: |
+          **Name:** '%title%'
+          **Link:** **[click](%uri%)**
+          **Repeat:** '%isRepeat%'
+        footer: "Very cool song 👍"
+        field:
+          author:
+            title: " 🎵 Artist:"
+          duration:
+            title: " ⏳ Duration:"
+          link:
+            title: " 📎 Link:"
+            description: "[Click to listen](%trackURI%)"
+          volume:
+            title: "🔊 Volume"
+          progressbar:
+            title: " 📊 Progress:"
+            description: "%position% ** %progressBar% ** %length%"
+            stream:
+              Description: "Live 🔴"
+    volume:
+      notFoundMemberInVoice-message: "You're not in %voiceChannel% with me, come to me"
+    pause:
+      notFoundMemberInVoice-message: "You're not in %voiceChannel% with me, come to me"
+    queue:
+      notFoundMemberInVoice-message: "You're not in the voice channel!"
+      notFoundBotInVoice-message: "They forgot me, wait!"
+      memberInVoice-message: "You're not in %voiceChannel%, go there to use the command"
+      embed:
+        title.message: "Current queue"
+        descriptionErrNotFoundQueue-message: "the queue is empty, just like my wallet, it's also empty"
+
+    repeat:
+      notFoundMemberInVoice-message: "You're not in the voice channel!"
+      botInVoice-message: "Wait, you forgot me"
+      isRepeat-message: "On retry now %isRepeat%"
+
+    skip:
+      # this time don't work :(
+      notFoundMemberInVoice-message: "You're not in the voice channel"
+      botInVoice-message: "Wait, you forgot me!"
+      skipMusic-message: "Skipped!"
+
+    stop:
+      notFoundMemberInVoice-message: "You're not in the voice channel"
+      botInVoice-message: "Wait, you forgot me"
+      stopMusic-message: "Stopped the current track and cleared the queue"
+
+    mute:
+      message:
+        noPermission: "You don't have enough privileges to perform this action!"
+        notFoundMember: "Could not find the user."
+        incorrectDuration: "A duration must be specified."
+        incorrectTime: "Wrong time."
+        incorrectReason: "A reason must be specified."
+        errorMuteUser: "Failed to mute user: %errorLog%"
+      successfulMute:
+        title: "The user is muted!"
+        field:
+          breaker: "Breaker"
+          timePunishment: "Punishment Time"
+          reason: "Reason"
+    unmute:
+      message:
+        successfulUnMute: "The user is muted!"
+        notFoundMember: "User not found"
+        errorUnMuteUser: "Failed to unwind user: %errorLog%"
+    avatar:
+      embed:
+        title: "Avatar %user%"
+        footer: "Your avatar is cool :3"
+
+    leaderboard:
+      embed:
+        title: "The best users in the level system"
+        description: "You're at %userRank%!"
+        field:
+          level: "Level: %userLevel% | Experience: %userExp%"
+        button:
+          prev: "Back"
+          delete: "Delete"
+          next: "Forward"
+
+    rankCard:
+      level: "Level: %level%"
+      experience: "Experience: %experience% / %maxExperience%"
+      errorDrawImage: "An error occurred while creating the image"
+
+    serverInfo:
+      boost:
+        Tier0: "Promotion Level: **No**"
+        Tier1: "Promotion Level: **1**"
+        Tier2: "Promotion Level: **2**"
+        Tier3: "Promotion Level: **3**"
+        TierUnknown: "Promotion Level: **Not recognized! Contact the bot developer!**"
+        TierNotFound: "Boost Level: **Beep beep boop boop**"
+      verificationLevel:
+        unknown: "Unrecognized"
+        none: "No"
+        lowe: "Minimum"
+        medium: "Optimal"
+        high: "Maximum"
+        veryHigh: "DIVINE!!!!"
+      embed:
+        title: "About %guildName%"
+        description: |
+          <:D ateTime:1209378875293962240> Creation Date: **%createTime%**
+          <:location:1209386794513203241> Location: **%location%**
+          <:Security:1209378873972891648> Security Level: **%verifyLevel**
+          %boostTier%
+          <:3Months:1209386800813051924> Boost Count: **%boostCount%**
+          <:6Months:1209386799231926302> Booster Role: **%boostRole%**
+          <:Owner:1209394164316373043> Creator: %guildOwner%
+          :flag_white: Language: **%language%**
+        field:
+          members:
+            title: "Participants"
+            description: |
+              :busts_in_silhouette: Total: **%allUsers%**
+              :bust_in_silhouette: People: **%users%**
+              :robot: Bots: **%bots%**
+          status:
+            title: "By status"
+            description: |
+              <:Online:1209207268281942047> Online: **%onlineUsers%**
+              <:Idle:1209207266620866620> Inactive: **%idleUsers%**
+              <:D nd:1209207263802171402> Do Not Disturb: **%dndUsers%**
+              <:Offline:1209207265165316187> Offline: **%offlineUsers%**
+          channel:
+            title: "Channels"
+            description: |
+              <:CategoryMobile:1209375825980428328> Categories: **%categoryChannels%**
+              <:Text:1209198697297092618> Text: **%textChannels%**
+              <:Voice:1209198695619493999> Voice: **%voiceChannels%**
+              <:News:1209198692058271794> News: **%newsChannels%**
+              <:Forum:1209198698702049311> Forums: **%forumChannels%**
+              <:Stage:1209198694331846676> Stage: **%stageChannels%**
+
+    userInfo:
+      status:
+        unknown: "<:Offline:1209207265165316187> Not Known"
+        idle: "<:Idle:1209207266620866620> Not activated"
+        online: "<:Online:1209207268281942047> Online"
+        offline: "<:Offline:1209207265165316187> Offline"
+        invisible: "<:Offline:1209207265165316187> Unknown"
+        dnd: "<:D nd:1209207263802171402> busy"
+      embed:
+        title: "User Information"
+        description: "You can add your custom status! (coming soon...)"
+        field:
+          userInfo:
+            title: "Basic Information"
+            description: |
+              Name: %userGlobal% (%user% )
+              Creation Date:** %formattedCreateTime%
+              Joined:** %formattedCreateTimeGuild%
+              **Status:** %status%
+          rep:
+            title: "Reputation"
+            description: "Coming soon"
+          level:
+            title: "Level"
+            description: "%level%"
+          experience:
+            title: "Experience"
+            description: "%experience%"
+
+    status:
+      embed:
+        title: "Bot Statistics"
+        field:
+          ping:
+            title: "Ping to Discord API"
+          cpuLoad:
+            title: "CPU Load"
+          ramLoad:
+            title: "Load on RAM"
+          ramFree:
+            title: "Free Memory"
+          ramUsed:
+            title: "Memory Used"
+          ramAll:
+            title: "Total Available Memory"
+          ramMax:
+            title: "Maximum Available Memory"
+          serverCount:
+            title: "Number of servers"
+          userCount:
+            title: "Number of users"
+
+    help:
+      embed:
+        title: "Reference information about CookiesBot"
+        description: "Reference information on the CookiesBot bot"
+        footer: "How can I help? XD"
+      actionRow:
+        selectMenu:
+          info:
+            title: "Information"
+            description: "Will show you information about the bot and the technical part"
+          command:
+            title: "Teams"
+            description: "Will show all possible commands"
+          settings:
+            title: "Settings"
+            description: "You can configure your bot through the settings"
+  interact:
+    helpSelectMenu:
+      info:
+        embed:
+          title: "Information about CookiesBot"
+          description: "CookiesBot was created into a tool that can help you in any way it can and is updated frequently by being open source"
+          footer: "Command called: %timestamp%"
+          field:
+            dev-title: "Developer"
+            programLang-title: "Programming Language"
+            discordLibs-title: "Discord Library"
+            version-title: "Bot version"
+
+      command:
+        embed:
+          title: "Choose the category you need"
+          description: "Here you can see the commands and optional values"
+          footer: "Command called: %timestamp%"
+
+      actionRow:
+        server:
+          title: "Server"
+          description: "Will show all server commands"
+        admin:
+          title: "Administration"
+          description: "Will show commands available to administration"
+        fun:
+          title: "Entertaining"
+          description: "Entertainment Teams"
+        music:
+          title: "Music"
+          description: "Music Teams"
+        prefix:
+          title: "Prefix Commands"
+          description: "Prefixed commands"
+        user:
+          title: "User Commands"
+          description: "Prefixed commands"
+        other:
+          title: "Other"
+          description: "Other commands"
+
+    settings:
+      embed:
+        title: "Choose the category you need"
+        description: "You can customize the bot for yourself"
+        footer: "Command called: %timestamp%"
+      actionRow:
+        language:
+          title: "Language"
+          description: "Allows you to change the language"
+
+    helpCommand:
+      embed:
+        title: "Category Commands: %category%"
+        footer: "Command called: %timestamp%"
+        field:
+          notFoundCategory: "Unknown Category..."
+          field:
+            name:
+              title: "Title"
+              description: "> %nameCommand%"
+            description:
+              title: "Description"
+              description: "> %descriptionCommand%"
+          option:
+            title: "Options"
+            description: "> %option%"
+
+    settingsMenu:
+      embed:
+        title: "Select an Available Language"
+        description: "If you haven't found the language you need, but you know that language or want to help develop your bot, then go to [GitHub bot](https://github.com/CookiessTeam/CookiesBot), you can submit a PR or upload it to our [Discord server](https://discord.gg/e7AJWyXnKp)"
+        footer: "Current language: %selectLanguage%"
+event:
+  level:
+    up:
+      embed:
+        title: "Level Up!"
+        description: "Congratulations, you got %level% level on the %serverName% server!"

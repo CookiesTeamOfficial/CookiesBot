@@ -50,9 +50,9 @@ public class Avatar extends Utils implements ICommand {
             user = event.getUser();
         }
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle(getLangMessage(event.getGuild(), "command.slash.avatar.embed.title.message").replace("%user%", user.getName()));
+        embed.setTitle(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.avatar.embed.title").replace("%user%", user.getName()));
         embed.setImage(user.getAvatarUrl());
-        embed.setFooter(getLangMessage(event.getGuild(), "command.slash.avatar.embed.footer.message"));
+        embed.setFooter(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.avatar.embed.footer"));
         event.replyEmbeds(embed.build()).queue();
     }
 }

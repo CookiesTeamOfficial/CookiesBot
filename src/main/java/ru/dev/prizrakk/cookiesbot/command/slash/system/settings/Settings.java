@@ -46,24 +46,24 @@ public class Settings extends Utils implements ICommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         if (event.getChannelType() != ChannelType.TEXT) {
-            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
             return;
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss ");
         String timestamp = dateFormat.format(new Date());
         if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
-            event.reply(Utils.getLangMessage(event.getGuild(),"command.interact.settings.noPerm.message")).queue();
+            event.reply(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.settings.noPerm")).queue();
         } else {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(new Color(255, 104, 0));
-            embed.setTitle(Utils.getLangMessage(event.getGuild(), "command.interact.settings.embed.title.message"));
-            embed.setDescription(Utils.getLangMessage(event.getGuild(), "command.interact.settings.embed.description.message"));
-            embed.setFooter(Utils.getLangMessage(event.getGuild(), "command.interact.settings.embed.footer.message").replace("%timestamp%", timestamp));
+            embed.setTitle(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.settings.embed.title"));
+            embed.setDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.settings.embed.description"));
+            embed.setFooter(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.settings.embed.footer").replace("%timestamp%", timestamp));
             event.replyEmbeds(embed.build()).setActionRow(
                     StringSelectMenu.create("settingsmenu")
                             .addOptions(
-                                    SelectOption.of(Utils.getLangMessage(event.getGuild(),"command.interact.settings.actionRow.language.title.message"), "language")
-                                            .withDescription(Utils.getLangMessage(event.getGuild(), "command.interact.settings.actionRow.language.description.message"))
+                                    SelectOption.of(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(),"command.interact.settings.actionRow.language.title"), "language")
+                                            .withDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.settings.actionRow.language.description"))
 
                             ).build()
             ).setEphemeral(true).queue();

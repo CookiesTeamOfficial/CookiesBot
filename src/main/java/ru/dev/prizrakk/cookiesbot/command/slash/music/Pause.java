@@ -2,6 +2,9 @@ package ru.dev.prizrakk.cookiesbot.command.slash.music;
 
 import dev.arbjerg.lavalink.client.LavalinkClient;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -51,9 +54,17 @@ public class Pause extends Utils implements ICommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         if (event.getChannelType() != ChannelType.TEXT) {
-            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot"))
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.doNotSendPrivateMessagesToTheBot"))
                     .setEphemeral(true)
                     .queue();
+            return;
+        }
+        Member member = event.getMember();
+        GuildVoiceState memberVoiceState = member.getVoiceState();
+
+        if (!memberVoiceState.inAudioChannel()) {
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.pause.notFoundMemberInVoice-message")
+                    .replace("%voiceChannel%", memberVoiceState.getChannel().getAsMention())).queue();
             return;
         }
         LavalinkClient client = lavalinkManager.getLavalinkClient();

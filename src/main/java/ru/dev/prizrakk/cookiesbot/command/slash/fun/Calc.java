@@ -9,16 +9,24 @@ import ru.dev.prizrakk.cookiesbot.command.CommandCategory;
 import ru.dev.prizrakk.cookiesbot.command.ICommand;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
-import javax.script.Bindings;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.awt.Color;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Calc extends Utils implements ICommand  {
+public class Calc extends Utils implements ICommand {
+    private static final Map<String, DoubleUnaryOperator> functions = new HashMap<>();
+
+    static {
+        functions.put("cos", Math::cos);
+        functions.put("sin", Math::sin);
+        functions.put("tan", Math::tan);
+        functions.put("acos", Math::acos);
+        functions.put("asin", Math::asin);
+        functions.put("atan", Math::atan);
+    }
+
     @Override
     public String getName() {
         return "calc";
@@ -31,9 +39,7 @@ public class Calc extends Utils implements ICommand  {
 
     @Override
     public List<OptionData> getOptions() {
-        List<OptionData> options = new ArrayList<>();
-        options.add(new OptionData(OptionType.STRING, "calc", "Арифметическое выражение для вычисления.", true));
-        return options;
+        return List.of(new OptionData(OptionType.STRING, "calc", "Арифметическое выражение для вычисления.", true));
     }
 
     @Override
@@ -49,49 +55,109 @@ public class Calc extends Utils implements ICommand  {
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         String expression = event.getOption("calc").getAsString();
-
-        // Проверка выражения с использованием регулярного выражения
-        //if (!expression.matches("[0-9+\\-*/().\\s]*((cos|sin|tan|acos|asin|atan)\\(([^)]+)\\)|pi|e)*")) {
-        //    event.reply("Неподдерживаемое выражение. Пожалуйста, используйте только цифры, операторы +, -, *, /, (), а также функции cos(), sin(), tan(), acos(), asin(), atan() и константы pi, e.").queue();
-        //    return;
-        //}
-
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("JavaScript");
-
-        // Проверка, что движок JavaScript доступен
-        if (engine == null) {
-            event.reply(getLangMessage(event.getGuild(), "command.slash.calc.errorEngine.message")).queue();
-            return;
-        }
-
-        // Добавление предопределённых значений и функций
-        Bindings bindings = engine.createBindings();
-        bindings.put("pi", Math.PI);
-        bindings.put("e", Math.E);
-        bindings.put("cos", (TrigFunction) Math::cos);
-        bindings.put("sin", (TrigFunction) Math::sin);
-        bindings.put("tan", (TrigFunction) Math::tan);
-        bindings.put("acos", (TrigFunction) Math::acos);
-        bindings.put("asin", (TrigFunction) Math::asin);
-        bindings.put("atan", (TrigFunction) Math::atan);
-
         try {
-            Object result = engine.eval(expression, bindings);
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.setTitle(getLangMessage(event.getGuild(), "command.slash.calc.title.message"));
-            embed.setColor(Color.BLUE);
-            embed.setDescription(getLangMessage(event.getGuild(), "command.slash.calc.description.message").replace("%result%", result.toString()));
-            embed.setFooter(getLangMessage(event.getGuild(), "command.slash.calc.footer.message"));
+            double result = evaluate(expression);
+            EmbedBuilder embed = new EmbedBuilder()
+                    .setTitle(getLangMessage(event.getMember().getUser(), event.getGuild(), "command.slash.calc.embed.title"))
+                    .setColor(Color.BLUE)
+                    .setDescription(getLangMessage(event.getMember().getUser(), event.getGuild(), "command.slash.calc.embed.description").replace("%result%", String.valueOf(result)))
+                    .setFooter(getLangMessage(event.getMember().getUser(), event.getGuild(), "command.slash.calc.embed.footer").replace("%version%", "v0.2-beta"));
             event.replyEmbeds(embed.build()).queue();
-        } catch (ScriptException e) {
-            getLogger().error("", e);
-            event.reply(getLangMessage(event.getGuild(), "command.slash.calc.error.message")).queue();
+        } catch (Exception e) {
+            getLogger().error("Error in calculation: ", e);
+            event.reply(getLangMessage(event.getMember().getUser(), event.getGuild(), "command.slash.calc.error-message")).queue();
         }
     }
 
+    private double evaluate(String expression) {
+        expression = expression.replaceAll("\\s+", "").toLowerCase();
+        expression = expression.replace("pi", String.valueOf(Math.PI)).replace("e", String.valueOf(Math.E));
+
+        return parseExpression(expression);
+    }
+
+    private double parseExpression(String expr) {
+        Stack<Double> values = new Stack<>();
+        Stack<Character> operators = new Stack<>();
+
+        for (int i = 0; i < expr.length(); i++) {
+            char c = expr.charAt(i);
+
+            if (Character.isDigit(c) || c == '.') {
+                StringBuilder numBuffer = new StringBuilder();
+                while (i < expr.length() && (Character.isDigit(expr.charAt(i)) || expr.charAt(i) == '.')) {
+                    numBuffer.append(expr.charAt(i++));
+                }
+                i--;
+                values.push(Double.parseDouble(numBuffer.toString()));
+            } else if (c == '(') {
+                operators.push(c);
+            } else if (c == ')') {
+                while (!operators.isEmpty() && operators.peek() != '(') {
+                    values.push(applyOperator(operators.pop(), values.pop(), values.pop()));
+                }
+                operators.pop();
+            } else if (isOperator(c)) {
+                while (!operators.isEmpty() && precedence(operators.peek()) >= precedence(c)) {
+                    values.push(applyOperator(operators.pop(), values.pop(), values.pop()));
+                }
+                operators.push(c);
+            } else {
+                StringBuilder funcBuffer = new StringBuilder();
+                while (i < expr.length() && Character.isLetter(expr.charAt(i))) {
+                    funcBuffer.append(expr.charAt(i++));
+                }
+                i--;
+
+                String functionName = funcBuffer.toString();
+                if (functions.containsKey(functionName)) {
+                    i++;
+                    int j = i, brackets = 1;
+                    while (j < expr.length() && brackets > 0) {
+                        if (expr.charAt(j) == '(') brackets++;
+                        if (expr.charAt(j) == ')') brackets--;
+                        j++;
+                    }
+                    double arg = parseExpression(expr.substring(i, j - 1));
+                    values.push(functions.get(functionName).apply(arg));
+                    i = j - 1;
+                }
+            }
+        }
+
+        while (!operators.isEmpty()) {
+            values.push(applyOperator(operators.pop(), values.pop(), values.pop()));
+        }
+        return values.pop();
+    }
+
+    private boolean isOperator(char c) {
+        return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+    }
+
+    private int precedence(char operator) {
+        return switch (operator) {
+            case '+', '-' -> 1;
+            case '*', '/' -> 2;
+            case '^' -> 3; // Степень имеет самый высокий приоритет
+            default -> -1;
+        };
+    }
+
+    private double applyOperator(char operator, double b, double a) {
+        return switch (operator) {
+            case '+' -> a + b;
+            case '-' -> a - b;
+            case '*' -> a * b;
+            case '/' -> a / b;
+            case '^' -> Math.pow(a, b);
+            default -> throw new IllegalArgumentException("Invalid operator: " + operator);
+        };
+    }
+
+
     @FunctionalInterface
-    interface TrigFunction {
+    interface DoubleUnaryOperator {
         double apply(double value);
     }
 }

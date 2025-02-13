@@ -1,6 +1,5 @@
 package ru.dev.prizrakk.cookiesbot;
 
-import dev.arbjerg.lavalink.libraries.jda.JDAVoiceUpdateListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -29,6 +28,7 @@ import ru.dev.prizrakk.cookiesbot.events.OnJoin;
 import ru.dev.prizrakk.cookiesbot.events.OnLeft;
 import ru.dev.prizrakk.cookiesbot.command.CommandManager;
 import ru.dev.prizrakk.cookiesbot.lavalink.LavalinkManager;
+import ru.dev.prizrakk.cookiesbot.manager.ColorManager;
 import ru.dev.prizrakk.cookiesbot.manager.ConfigManager;
 import ru.dev.prizrakk.cookiesbot.manager.console.Console;
 import ru.dev.prizrakk.cookiesbot.manager.LangManager;
@@ -53,22 +53,24 @@ public class Main extends Utils {
     public static String currentVersion = "1.1.0";
     public static void main(String[] args) throws IOException {
         Main main = new Main();
+
         
         /* =============== */
         /*   Properties Loader   */
         /* =============== */
         LangManager.loadLanguages();
-        File configFile = new File("config.properties");
+        File configFile = new File("config.yml");
         ConfigManager configManager = new ConfigManager();
         if(!configFile.exists()) {
-            configManager.setProperty("bot.token", "please insert your token");
-            configManager.setProperty("bot.activity.type", "playing");
-            configManager.setProperty("bot.activity.status", "Minecraft!");
-            configManager.setProperty("bot.activity.status.streaming.url", "https://www.twitch.tv/ender_games__");
-            configManager.setProperty("type.database", "mysql/sqlite");
-            configManager.setProperty("mysql.url", "jdbc:mysql://127.0.0.1:3306/BotDatabase?autoReconnect=true");
-            configManager.setProperty("mysql.login", "please insert your password");
-            configManager.setProperty("mysql.password", "please insert your password");
+//            configManager.setProperty("bot.token", "please insert your token");
+//            configManager.setProperty("bot.activity.type", "playing");
+//            configManager.setProperty("bot.activity.status", "Minecraft!");
+//            configManager.setProperty("bot.activity.status.streaming.url", "https://www.twitch.tv/ender_games__");
+//            configManager.setProperty("type.database", "mysql/sqlite");
+//            configManager.setProperty("mysql.url", "jdbc:mysql://127.0.0.1:3306/BotDatabase?autoReconnect=true");
+//            configManager.setProperty("mysql.login", "please insert your password");
+//            configManager.setProperty("mysql.password", "please insert your password");
+//            configManager.saveConfig();
             configManager.saveConfig();
             getLogger().error("config.properties is not empty please insert");
             getLogger().info("Stopping bot!");
@@ -77,6 +79,9 @@ public class Main extends Utils {
         /* =============== */
         /* Check updates   */
         /* =============== */
+        getLogger().info(ColorManager.ANSI_BLUE + "===================");
+        getLogger().info("Check update....");
+        getLogger().info(ColorManager.ANSI_BLUE + "===================");
         try {
             String latestVersion = getLatestReleaseVersion("CookiessTeam", "CookiesBot");
             if (latestVersion == null) {
@@ -180,12 +185,12 @@ public class Main extends Utils {
         LavalinkManager lavalinkManager = new LavalinkManager(configManager.getProperty("bot.token"), jda);
         Activity activity;
         switch (configManager.getProperty("bot.activity.type")) {
-            case "streaming" -> activity = Activity.streaming(configManager.getProperty("bot.activity.status"), configManager.getProperty("bot.activity.status.streaming.url"));
-            case "playing" -> activity = Activity.playing(configManager.getProperty("bot.activity.status"));
-            case "competing" -> activity = Activity.competing(configManager.getProperty("bot.activity.status"));
-            case "watching" -> activity = Activity.watching(configManager.getProperty("bot.activity.status"));
-            case "listening" -> activity = Activity.listening(configManager.getProperty("bot.activity.status"));
-            default -> activity = Activity.customStatus(configManager.getProperty("bot.activity.status"));
+            case "streaming" -> activity = Activity.streaming(configManager.getProperty("bot.activity.text"), configManager.getProperty("bot.activity.status.streaming-url"));
+            case "playing" -> activity = Activity.playing(configManager.getProperty("bot.activity.text"));
+            case "competing" -> activity = Activity.competing(configManager.getProperty("bot.activity.text"));
+            case "watching" -> activity = Activity.watching(configManager.getProperty("bot.activity.text"));
+            case "listening" -> activity = Activity.listening(configManager.getProperty("bot.activity.text"));
+            default -> activity = Activity.customStatus(configManager.getProperty("bot.activity.text"));
         }
         try {
             jda = JDABuilder.createDefault(configManager.getProperty("bot.token"))
@@ -206,7 +211,8 @@ public class Main extends Utils {
             System.exit(1);
         }
 
-        LavalinkManager lavalinkManager1 = new LavalinkManager(configManager.getProperty("bot.token"), jda);
+        //lavalinkManager = new LavalinkManager(configManager.getProperty("bot.token"), jda);
+        jda.addEventListener(new OnReady());
         //jda.addEventListener(lavalinkManager);
         /* ======================= */
         /* Slash Command           */

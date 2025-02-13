@@ -1,6 +1,7 @@
 package ru.dev.prizrakk.cookiesbot.database;
 
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 
 import java.sql.SQLException;
 
@@ -24,5 +25,13 @@ public class DatabaseUtils {
             database.createGuildStats(guildVariable);
         }
         return guildVariable;
+    }
+    public UserVariable getUserFromDatabase(User user) throws SQLException {
+        UserVariable userVariable = database.findUserStats(user.getId());
+        if(userVariable == null) {
+            userVariable = new UserVariable(user.getId(), "none", "", "Russia", 0,0, 0);
+            database.createUserStats(userVariable);
+        }
+        return userVariable;
     }
 }

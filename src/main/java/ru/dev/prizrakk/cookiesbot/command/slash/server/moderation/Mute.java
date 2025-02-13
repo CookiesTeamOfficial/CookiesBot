@@ -49,45 +49,45 @@ public class Mute extends Utils implements ICommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         if (event.getChannelType() != ChannelType.TEXT) {
-            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
             return;
         }
         Member member = event.getOption("user").getAsMember();
         if (member == null) {
-            event.reply(getLangMessage(event.getGuild(), "command.slash.mute.notFoundMember.message")).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.mute.message.notFoundMember")).setEphemeral(true).queue();
             return;
         }
 
         String time = event.getOption("duration").getAsString();
         if (time == null || time.isEmpty()) {
-            event.reply(getLangMessage(event.getGuild(), "command.slash.mute.incorrectDuration.message")).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.mute.message.incorrectDuration")).setEphemeral(true).queue();
             return;
         }
 
         long milliseconds = parseDurationToMilliseconds(time);
         if (milliseconds <= 0) {
-            event.reply(getLangMessage(event.getGuild(), "command.slash.mute.incorrectTime.message")).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.mute.message.incorrectTime")).setEphemeral(true).queue();
             return;
         }
 
         String reason = event.getOption("reason").getAsString();
         if (reason == null || reason.isEmpty()) {
-            event.reply(getLangMessage(event.getGuild(), "command.slash.mute.incorrectReason.message")).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.mute.message.incorrectReason")).setEphemeral(true).queue();
             return;
         }
 
         try {
             member.timeoutFor(milliseconds, TimeUnit.MILLISECONDS).reason(reason).queue();
         } catch (Exception e) {
-            event.reply(getLangMessage(event.getGuild(), "command.slash.mute.errorMuteUser.message").replace("%errorLog%", e.getMessage())).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.mute.message.errorMuteUser").replace("%errorLog%", e.getMessage())).setEphemeral(true).queue();
             return;
         }
 
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle(getLangMessage(event.getGuild(), "command.slash.mute.successfulMute.title.message"));
-        embed.addField(getLangMessage(event.getGuild(), "command.slash.mute.successfulMute.field.breaker.message"), member.getAsMention(), true);
-        embed.addField(getLangMessage(event.getGuild(), "command.slash.mute.successfulMute.field.timePunishment.message"), time, true);
-        embed.addField(getLangMessage(event.getGuild(), "command.slash.mute.successfulMute.field.reason.message"), reason, true);
+        embed.setTitle(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.mute.successfulMute.title"));
+        embed.addField(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.mute.successfulMute.field.breaker"), member.getAsMention(), true);
+        embed.addField(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.mute.successfulMute.field.timePunishment"), time, true);
+        embed.addField(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.mute.successfulMute.field.reason"), reason, true);
         //embed.setFooter(config.years_author);
         //sendAudit(event);
         event.replyEmbeds(embed.build()).setEphemeral(true).queue();
@@ -119,7 +119,7 @@ public class Mute extends Utils implements ICommand {
                         milliseconds += value * 1000;
                         break;
                     default:
-                        System.err.println("Invalid time unit: " + unit);
+                        getLogger().error("Invalid time unit: " + unit);
                 }
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {

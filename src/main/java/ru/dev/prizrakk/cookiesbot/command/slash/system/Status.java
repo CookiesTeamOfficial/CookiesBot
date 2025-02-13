@@ -74,18 +74,18 @@ public class Status extends Utils implements ICommand {
 
         // Создание Embed
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle(getLangMessage(event.getGuild(), "command.slash.status.embed.title.message"));
+        embed.setTitle(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.status.embed.title"));
         embed.setColor(Color.GREEN);
 
-        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.ping.title.message"), gatewayPing + " ms", true);
-        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.cpuLoad.title.message"), String.format("%.2f%% %s", systemLoad * 100, cpuProgressBar), true);
-        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.ramLoad.title.message"), String.format("%.2f%% %s", memoryUsage * 100, memoryProgressBar), true);
-        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.ramFree.title.message"), freeMemory + " MB", true);
-        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.ramUsed.title.message"), (totalMemory - freeMemory) + " MB", true);
-        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.ramAll.title.message"), totalMemory + " MB", true);
-        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.ramMax.title.message"), maxMemory + " MB", true);
-        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.serverCount.title.message"), String.valueOf(guildCount), true);
-        embed.addField(getLangMessage(event.getGuild(), "command.slash.status.embed.field.userCount.title.message"), String.valueOf(userCount), true);
+        embed.addField(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.status.embed.field.ping.title"), gatewayPing + " ms", true);
+        embed.addField(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.status.embed.field.cpuLoad.title"), String.format("%.2f%% %s", systemLoad * 100, cpuProgressBar), true);
+        embed.addField(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.status.embed.field.ramLoad.title"), String.format("%.2f%% %s", memoryUsage * 100, memoryProgressBar), true);
+        embed.addField(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.status.embed.field.ramFree.title"), freeMemory + " MB", true);
+        embed.addField(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.status.embed.field.ramUsed.title"), (totalMemory - freeMemory) + " MB", true);
+        embed.addField(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.status.embed.field.ramAll.title"), totalMemory + " MB", true);
+        embed.addField(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.status.embed.field.ramMax.title"), maxMemory + " MB", true);
+        embed.addField(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.status.embed.field.serverCount.title"), String.valueOf(guildCount), true);
+        embed.addField(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.status.embed.field.userCount.title"), String.valueOf(userCount), true);
 
         event.replyEmbeds(embed.build()).queue();
     }

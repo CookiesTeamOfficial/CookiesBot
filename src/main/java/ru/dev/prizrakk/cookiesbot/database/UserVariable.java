@@ -2,27 +2,54 @@ package ru.dev.prizrakk.cookiesbot.database;
 
 //GDBV - Global DataBase Variable
 public class UserVariable {
+    private String UUID;
+    private String staff;
+    private String achievements;
+    private String lang;
+    private int balance;
+    private int warn_count;
+    private int ban;
 
-    public UserVariable(String name, int balance, int warn_count, int level, int xp, int ban, String UUID) {
-        this.name = name;
+    public UserVariable(String UUID, String staff, String achievements, String lang, int balance, int warn_count, int ban) {
+        this.UUID = UUID;
+        this.staff = staff;
+        this.achievements = achievements;
+        this.lang = lang;
         this.balance = balance;
         this.warn_count = warn_count;
-        this.level = level;
-        this.xp = xp;
         this.ban = ban;
+    }
+
+    public String getUUID() {
+        return UUID;
+    }
+
+    public void setUUID(String UUID) {
         this.UUID = UUID;
     }
 
-    private final String name;
-    private int balance;
-    private int warn_count;
-    private int level;
-    private int xp;
-    private int ban;
-    private String UUID;
+    public String getStaff() {
+        return staff;
+    }
 
-    public String getName() {
-        return name;
+    public void setStaff(String staff) {
+        this.staff = staff;
+    }
+
+    public String getAchievements() {
+        return achievements;
+    }
+
+    public void setAchievements(String achievements) {
+        this.achievements = achievements;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 
     public int getBalance() {
@@ -41,22 +68,6 @@ public class UserVariable {
         this.warn_count = warn_count;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public int getXp() {
-        return xp;
-    }
-
-    public void setXp(int xp) {
-        this.xp = xp;
-    }
-
     public int getBan() {
         return ban;
     }
@@ -64,11 +75,4 @@ public class UserVariable {
     public void setBan(int ban) {
         this.ban = ban;
     }
-
-    public String getUUID() {
-        return UUID;
-    }
-
-
-
 }

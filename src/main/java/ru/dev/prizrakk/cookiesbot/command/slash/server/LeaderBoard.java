@@ -57,7 +57,7 @@ public class LeaderBoard extends Utils implements ICommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         if (event.getChannelType() != ChannelType.TEXT) {
-            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
             return;
         }
         String guildId = event.getGuild().getId();
@@ -105,16 +105,16 @@ public class LeaderBoard extends Utils implements ICommand {
         int endIndex = Math.min(startIndex + USERS_PER_PAGE, allStats.size());
 
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle(getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.title.message"));
+        embed.setTitle(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.leaderboard.embed.title"));
         embed.setColor(Color.ORANGE);
-        embed.setDescription(getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.description.message").replace("%userRank%", userRank + ""));
+        embed.setDescription(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.leaderboard.embed.description").replace("%userRank%", userRank + ""));
 
         for (int i = startIndex; i < endIndex; i++) {
             ExpVariable stats = allStats.get(i);
             Member member = event.getGuild().getMemberById(stats.getUserID());
             if (!member.getUser().isBot()) {
                 embed.addField((i + 1) + ". " + member.getEffectiveName(),
-                        getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.field.message")
+                        getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.leaderboard.embed.field.level")
                                 .replace("%userLevel%", stats.getLevel() + "")
                                 .replace("%userExp%", stats.getExp() + ""),false);
             }
@@ -122,11 +122,11 @@ public class LeaderBoard extends Utils implements ICommand {
 
         List<Button> buttons = new ArrayList<>();
         if (pageIndex > 0) {
-            buttons.add(Button.primary("leaderboard_prev_" + (pageIndex - 1), getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.button.prev.message")));
+            buttons.add(Button.primary("leaderboard_prev_" + (pageIndex - 1), getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.leaderboard.embed.button.prev")));
         }
-        buttons.add(Button.danger("leaderboard_delete", getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.button.delete.message")));
+        buttons.add(Button.danger("leaderboard_delete", getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.leaderboard.embed.button.delete")));
         if (endIndex < allStats.size()) {
-            buttons.add(Button.primary("leaderboard_next_" + (pageIndex + 1), getLangMessage(event.getGuild(), "command.slash.leaderboard.embed.button.next.message")));
+            buttons.add(Button.primary("leaderboard_next_" + (pageIndex + 1), getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.leaderboard.embed.button.next")));
         }
 
         event.replyEmbeds(embed.build()).addActionRow(buttons).queue();

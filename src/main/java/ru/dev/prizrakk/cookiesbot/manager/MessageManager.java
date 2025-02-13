@@ -47,7 +47,7 @@ public class MessageManager extends ListenerAdapter {
                         EmbedBuilder embed = new EmbedBuilder();
                         embed.setTitle(LangManager.getMessage(guildVariable.getLang(), "event.level.up.embed.title"));
                         embed.setThumbnail(event.getGuild().getIconUrl());
-                        embed.setDescription(Utils.getLangMessage(event.getGuild(), "event.level.up.embed.description")
+                        embed.setDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "event.level.up.embed.description")
                                 .replace("%level%",expVariable.getLevel() + "")
                                 .replace("%serverName%",event.getGuild().getName()));
                         privateChannel.sendMessageEmbeds(embed.build()).queue();

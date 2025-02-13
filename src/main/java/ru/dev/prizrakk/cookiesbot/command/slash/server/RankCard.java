@@ -58,7 +58,7 @@ public class RankCard extends Utils implements ICommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         if (event.getChannelType() != ChannelType.TEXT) {
-            event.reply(getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
             return;
         }
         User user = (event.getOption("user") != null) ? event.getOption("user").getAsUser() : event.getUser();
@@ -76,7 +76,7 @@ public class RankCard extends Utils implements ICommand {
             event.replyFiles(FileUpload.fromData(profileImage, "profile_image.png")).queue();
         } catch (IOException e) {
             getLogger().error("", e);
-            event.reply(getLangMessage(event.getGuild(), "command.slash.rankCard.errorDrawImage.message")).setEphemeral(true).queue();
+            event.reply(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.rankCard.errorDrawImage")).setEphemeral(true).queue();
         }
     }
 
@@ -108,11 +108,11 @@ public class RankCard extends Utils implements ICommand {
 
         // Рисование уровня
         g.setFont(new Font("Arial", Font.BOLD, 22));
-        g.drawString(getLangMessage(event.getGuild(), "command.slash.rankCard.level.message").replace("%level%", level + ""), 200, 140);
+        g.drawString(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.rankCard.level").replace("%level%", level + ""), 200, 140);
 
         // Рисование опыта
         g.setFont(new Font("Arial", Font.BOLD, 22));
-        g.drawString(getLangMessage(event.getGuild(), "command.slash.rankCard.experience.message")
+        g.drawString(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.rankCard.experience")
                 .replace("%experience%", experience + "")
                 .replace("%maxExperience%", maxExperience + ""), 340, 140);
 

@@ -44,19 +44,19 @@ public class Help extends Utils implements ICommand {
     public void execute(SlashCommandInteractionEvent event) throws SQLException {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(new Color(255, 104, 0));
-        embed.setTitle(getLangMessage(event.getGuild(), "command.slash.help.embed.title.message"), "https://cookiesbot.dev-prizrakk.ru");
-        embed.setDescription(getLangMessage(event.getGuild(), "command.slash.help.embed.description.message"));
-        embed.setFooter(getLangMessage(event.getGuild(), "command.slash.help.embed.footer.message"));
+        embed.setTitle(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.help.embed.title"), "https://docs-cookiesbot.cookiesteam.ru");
+        embed.setDescription(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.help.embed.description"));
+        embed.setFooter(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.help.embed.footer"));
         event.replyEmbeds(embed.build()).setActionRow(
                 StringSelectMenu.create("helpmenu")
-                        .addOptions(SelectOption.of(getLangMessage(event.getGuild(), "command.slash.help.actionRow.selectMenu.info.title.message"), "info")
-                                .withDescription(getLangMessage(event.getGuild(), "command.slash.help.actionRow.selectMenu.info.description.message"))
+                        .addOptions(SelectOption.of(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.help.actionRow.selectMenu.info.title"), "info")
+                                .withDescription(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.help.actionRow.selectMenu.info.description"))
                                 .withEmoji(Emoji.fromUnicode("ℹ️")))
-                        .addOptions(SelectOption.of(getLangMessage(event.getGuild(), "command.slash.help.actionRow.selectMenu.command.title.message"), "command")
-                                .withDescription(getLangMessage(event.getGuild(), "command.slash.help.actionRow.selectMenu.command.description.message"))
+                        .addOptions(SelectOption.of(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.help.actionRow.selectMenu.command.title"), "command")
+                                .withDescription(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.help.actionRow.selectMenu.command.description"))
                                 .withEmoji(Emoji.fromUnicode("⌨️")))
-                        .addOptions(SelectOption.of(getLangMessage(event.getGuild(), "command.slash.help.actionRow.selectMenu.settings.title.message"), "settings")
-                                .withDescription(getLangMessage(event.getGuild(), "command.slash.help.actionRow.selectMenu.settings.description.message"))
+                        .addOptions(SelectOption.of(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.help.actionRow.selectMenu.settings.title"), "settings")
+                                .withDescription(getLangMessage(event.getMember().getUser(),event.getGuild(), "command.slash.help.actionRow.selectMenu.settings.description"))
                                 .withEmoji(Emoji.fromUnicode("⚙️")))
                         .build()
         ).queue();

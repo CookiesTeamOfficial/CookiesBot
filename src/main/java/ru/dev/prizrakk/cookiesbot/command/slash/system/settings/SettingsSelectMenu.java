@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 public class SettingsSelectMenu extends ListenerAdapter {
     private Database database;
@@ -32,7 +33,7 @@ public class SettingsSelectMenu extends ListenerAdapter {
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
         if (event.getChannelType() != ChannelType.TEXT) {
-            event.reply(Utils.getLangMessage(event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
+            event.reply(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.doNotSendPrivateMessagesToTheBot")).setEphemeral(true).queue();
             return;
         }
         try {
@@ -47,23 +48,28 @@ public class SettingsSelectMenu extends ListenerAdapter {
             if (selectedValue.equals("language")) {
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.setColor(new Color(255, 104, 0));
-                embed.setTitle(Utils.getLangMessage(event.getGuild(), "command.interact.settingsMenu.embed.title.message"));
-                embed.setDescription(Utils.getLangMessage(event.getGuild(), "command.interact.settingsMenu.embed.description.message"));
-                embed.setFooter(Utils.getLangMessage(event.getGuild(), "command.interact.settingsMenu.embed.footer.message").replace("%selectLanguage%", guildVariable.getLang()));
+                embed.setTitle(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.settingsMenu.embed.title"));
+                embed.setDescription(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.settingsMenu.embed.description"));
+                embed.setFooter(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.settingsMenu.embed.footer").replace("%selectLanguage%", guildVariable.getLang()));
 
                 // Получение списка доступных языков
-                Map<String, Properties> languages = LangManager.getLanguages();
-                StringSelectMenu.Builder selectMenuBuilder = StringSelectMenu.create("language_select");
 
-                for (Map.Entry<String, Properties> entry : languages.entrySet()) {
-                    String langKey = entry.getKey();
-                    Properties langProperties = entry.getValue();
-                    String languageName = langProperties.getProperty("language.name", langKey);
-                    String languageEmoji = langProperties.getProperty("language.emoji", "");
-                    String languageDesc = langProperties.getProperty("language.description", "");
-                    String languageVersion = langProperties.getProperty("language.version", "");
+                StringSelectMenu.Builder selectMenuBuilder = StringSelectMenu.create("language_select");
+                Set<String> languageKeys = LangManager.getAvailableLanguages(); // Получаем Set<String>
+
+                for (String langKey : languageKeys) {
+                    Map<String, Object> langProperties = LangManager.getLanguageProperties(langKey); // Получаем свойства языка
+
+                    String languageName = (String) langProperties.getOrDefault("language.name", langKey);
+                    String languageEmoji = (String) langProperties.getOrDefault("language.emoji", "");
+                    String languageDesc = (String) langProperties.getOrDefault("language.description", "");
+                    String languageVersion = (String) langProperties.getOrDefault("language.version", "");
+
                     selectMenuBuilder.addOption(languageName, langKey, languageDesc + " version: " + languageVersion, Emoji.fromUnicode(languageEmoji));
                 }
+
+
+
 
                 StringSelectMenu selectMenu = selectMenuBuilder.build();
                 event.replyEmbeds(embed.build()).setActionRow(selectMenu).setEphemeral(true).queue();
@@ -77,7 +83,7 @@ public class SettingsSelectMenu extends ListenerAdapter {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            event.reply(Utils.getLangMessage(event.getGuild(), "command.interact.settingsMenu.embed.footer.message").replace("%selectLanguage%", guildVariable.getLang())).setEphemeral(true).queue();
+            event.reply(Utils.getLangMessage(event.getMember().getUser(),event.getGuild(), "command.interact.settingsMenu.embed.footer").replace("%selectLanguage%", guildVariable.getLang())).setEphemeral(true).queue();
         }
     }
 }

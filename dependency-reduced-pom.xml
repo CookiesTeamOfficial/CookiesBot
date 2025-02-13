@@ -58,6 +58,11 @@
       <id>jitpack</id>
       <url>https://jitpack.io</url>
     </repository>
+    <repository>
+      <id>ll-releases</id>
+      <name>Lavalink Releases</name>
+      <url>https://maven.lavalink.dev/releases</url>
+    </repository>
   </repositories>
   <properties>
     <maven.compiler.target>16</maven.compiler.target>

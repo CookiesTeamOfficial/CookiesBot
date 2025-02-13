@@ -1,5 +1,6 @@
 package ru.dev.prizrakk.cookiesbot.database;
 
+import ru.dev.prizrakk.cookiesbot.manager.ColorManager;
 import ru.dev.prizrakk.cookiesbot.manager.ConfigManager;
 import ru.dev.prizrakk.cookiesbot.util.Utils;
 
@@ -15,9 +16,9 @@ public class Database extends Utils {
         if(connection != null){
             return connection;
         }
-        getLogger().debug("===================");
-        getLogger().debug("Loading the Database");
-        getLogger().debug("===================");
+        getLogger().info(ColorManager.ANSI_BLUE + "===================");
+        getLogger().info("Loading the Database");
+        getLogger().info(ColorManager.ANSI_BLUE +"===================");
         ConfigManager config = new ConfigManager();
         //String url = config.getProperty("jdbc");
         //String user = config.getProperty("login");
@@ -27,28 +28,26 @@ public class Database extends Utils {
 
 
         connection = DriverManager.getConnection(url);
-        getLogger().debug("Connection successful!");
+        getLogger().info("Connection successful!");
         return connection;
     }
 
     public void initializeDatabase() throws SQLException{
         Statement statement = getConnection().createStatement();
         // SQL Запрос
-        getLogger().debug("Checking the user_info table");
+        getLogger().info("Checking the user_info table");
         String user_info = "CREATE TABLE IF NOT EXISTS `user_info` (\n" +
                 "\t`id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "\t`UUID` INT,\n" +
-                "\t`name` VARCHAR(128),\n" +
                 "\t`staff` VARCHAR(128),\n" +
-                "\t`staff_key` VARCHAR(128),\n" +
+                "\t`achievements` VARCHAR(128),\n" +
+                "\t`lang` VARCHAR(128),\n" +
                 "\t`balance` INT,\n" +
-                "\t`xp` INT,\n" +
-                "\t`level` INT,\n" +
                 "\t`warn_count` INT,\n" +
                 "\t`ban` INT\n" +
                 ");";
         statement.execute(user_info);
-        getLogger().debug("Checking the guild_settings table");
+        getLogger().info("Checking the guild_settings table");
         String settings = "CREATE TABLE IF NOT EXISTS `guild_settings` (\n" +
                 "\t`id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "\t`UUID` INT,\n" +
@@ -62,7 +61,7 @@ public class Database extends Utils {
                 "\t`ban` INT\n" +
                 ");";
         statement.execute(settings);
-        getLogger().debug("Checking the user_rank table");
+        getLogger().info("Checking the user_rank table");
         String user_rank = "CREATE TABLE IF NOT EXISTS `user_rank` (\n" +
                 "\t`user_id` INTEGER,\n" +
                 "\t`guild_id` INTEGER,\n" +
@@ -72,7 +71,7 @@ public class Database extends Utils {
                 "\tPRIMARY KEY (`user_id`, `guild_id`)\n" +
                 ");";
         statement.execute(user_rank);
-        getLogger().debug("Check mutes table");
+        getLogger().info("Check mutes table");
         String mutes = "CREATE TABLE IF NOT EXISTS mutes (\n" +
                 "\t`id` INTEGER PRIMARY KEY,\n" +
                 "\t`userId` BIGINT,\n" +
@@ -81,7 +80,7 @@ public class Database extends Utils {
         statement.execute(mutes);
 
         statement.close();
-        getLogger().debug("Verification/Creation of database was successful!");
+        getLogger().info("Verification/Creation of database was successful!");
     }
     public GuildVariable findGuild(String UUID) throws SQLException {
         PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM guild_settings WHERE UUID = ?");
@@ -106,25 +105,26 @@ public class Database extends Utils {
         statement.close();
         return null;
     }
-    public UserVariable findPlayerStatsByNICK(String UUID) throws SQLException {
+    public UserVariable findUserStats(String UUID) throws SQLException {
         PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM user_info WHERE UUID = ?");
-        statement.setInt(1, Integer.parseInt(UUID));
+        statement.setString(1, UUID);
         ResultSet resultSet = statement.executeQuery();
         UserVariable UserVariable;
         if(resultSet.next()){
             UserVariable = new UserVariable(
-                    resultSet.getString("name"),
+                    resultSet.getString("UUID"),
+                    resultSet.getString("Staff"),
+                    resultSet.getString("achievements"),
+                    resultSet.getString("lang"),
                     resultSet.getInt("balance"),
                     resultSet.getInt("warn_count"),
-                    resultSet.getInt("level"),
-                    resultSet.getInt("xp"),
-                    resultSet.getInt("ban"),
-                    resultSet.getString("UUID")
+                    resultSet.getInt("ban")
             );
             statement.close();
 
             return UserVariable;
         }
+
 
 
         statement.close();
@@ -178,12 +178,12 @@ public class Database extends Utils {
     public void createUserStats(UserVariable UserVariable) throws SQLException {
 
         PreparedStatement statement = getConnection()
-                .prepareStatement("INSERT INTO player_stats( UUID, name, balance, xp, level, warn_count, ban) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                .prepareStatement("INSERT INTO user_info(UUID, staff, achievements, lang,  balance, warn_count, ban) VALUES (?, ?, ?, ?, ?, ?, ?)");
         statement.setString(1, UserVariable.getUUID());
-        statement.setString(2, UserVariable.getName());
-        statement.setDouble(3, UserVariable.getBalance());
-        statement.setInt(4, UserVariable.getXp());
-        statement.setInt(5, UserVariable.getLevel());
+        statement.setString(2, UserVariable.getStaff());
+        statement.setString(3, UserVariable.getAchievements());
+        statement.setString(4, UserVariable.getLang());
+        statement.setDouble(5, UserVariable.getBalance());
         statement.setInt(6, UserVariable.getWarn_count());
         statement.setInt(7, UserVariable.getBan());
 
@@ -241,12 +241,12 @@ public class Database extends Utils {
     }
     public void updateUserStats(UserVariable UserVariable) throws SQLException {
 
-        PreparedStatement statement = getConnection().prepareStatement("UPDATE user_info SET warn_count = ?, xp = ?, level = ?, name = ?, balance = ?, ban = ? WHERE UUID = ?");
-        statement.setInt(1, UserVariable.getWarn_count());
-        statement.setInt(2, UserVariable.getXp());
-        statement.setInt(3, UserVariable.getLevel());
-        statement.setString(4, UserVariable.getName());
-        statement.setDouble(5, UserVariable.getBalance());
+        PreparedStatement statement = getConnection().prepareStatement("UPDATE user_info SET staff = ?, achievements = ?, lang = ?, balance = ?, warn_count = ?, ban = ? WHERE UUID = ?");
+        statement.setString(1, UserVariable.getStaff());
+        statement.setString(2, UserVariable.getAchievements());
+        statement.setString(3, UserVariable.getLang());
+        statement.setDouble(4, UserVariable.getBalance());
+        statement.setInt(5, UserVariable.getWarn_count());
         statement.setInt(6, UserVariable.getBan());
         statement.setString(7, UserVariable.getUUID());
 
