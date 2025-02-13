@@ -50,7 +50,7 @@ import java.sql.SQLException;
 public class Main extends Utils {
     static JDA jda;
     static Database database;
-    public static String currentVersion = "1.1.0";
+    public static String currentVersion = "1.2.0";
     public static void main(String[] args) throws IOException {
         Main main = new Main();
 
